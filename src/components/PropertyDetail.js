@@ -43,9 +43,9 @@ const PropertyDetailPage = () => {
       <NavBar />
       {/* data : {JSON.stringify(data)} */}
       <h1>property:{data?.title}</h1>
-      {/* {data.propertyImage && data.propertyImage.length > 0 && (
-  <img src={data.propertyImage[0].name} alt="PropertyImage" className="property-image" />
-)} */}
+      {data.propertyImage && data.propertyImage.length > 0 && (
+  <img src={data.propertyImage[0].name} alt="PropertyImage" className="property-image col-md-6 col-sm-6" />
+)}
       <p>Price: {data?.price}</p>
       <p>City: {data?.city}</p>
 

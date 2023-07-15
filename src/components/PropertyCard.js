@@ -10,7 +10,7 @@ const PropertyCard = ({property}) => {
     };    console.log({id: property._id})
   
       return (
-          <div className="col-3 mt-5 card" onClick={handleClick}>
+          <div className="col-sm-4 col-md-3 mt-2 card" onClick={handleClick}>
               <img src={property.propertyImage[0]?.name} alt="Property" className="card-image" />
               <div className="card-content">
                 <p className="card-title">{property.title}</p>

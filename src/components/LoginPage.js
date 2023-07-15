@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { createlogin } from '../api';
+import Cookies from 'js-cookie';
 
 const LoginPage = () => {
 
@@ -24,7 +25,7 @@ const LoginPage = () => {
       
       if (response.userId) {
       localStorage.setItem('userId', response.userId);
-      localStorage.setItem('token', response.token);
+      Cookies.set('access_token', response.token);
 
       navigate('/');
 

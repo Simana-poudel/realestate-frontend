@@ -1,7 +1,21 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
+
 
 // Define the base URL for the API
 const baseURL = 'http://localhost:5000';
+
+
+// axios.interceptors.request.use(
+//   (config) => {
+//     config.withCredentials = true;
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
 
 //post request for signup
 export const createAccount = async (data) => {
@@ -39,7 +53,15 @@ export const createlogin = async (data) => {
 
   export const createLogout = async () => {
     try {
-      const response = await axios.post(`${baseURL}/api/user/auth/logout`);
+      const token = Cookies.get('access_token'); // Retrieve the token from the cookie
+      console.log(token)
+      const response = await axios.post(
+        `${baseURL}/api/user/auth/logout`, null, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true, // Include credentials in the request
+        });
       return response.data.data;
     } catch (error) {
       console.error(error);
