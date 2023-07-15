@@ -1,0 +1,77 @@
+
+.property-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .card {
+    width: 300px;
+    margin: 15px;
+    /* border: 1px solid #ccc; */
+    border-radius: 5px;
+    overflow: hidden;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+  position: relative;
+  }
+  
+  
+.card:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.7;
+  z-index: -0.5;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover:before {
+  opacity: 0.9;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 10px rgba(165, 83, 83, 0.3);
+  background-color: #f9f9f9;
+}
+
+  .card a {
+    text-decoration: none;
+    color: #161616;
+  }
+  
+  .card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: lightgray 50% / cover no-repeat;
+  }
+  
+  .card-content {
+    padding: 1px;
+  }
+  
+  
+.card-price {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #1C3988;
+}
+
+.card-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #000000;
+}
+
+.card-city {
+  color: #272727;
+}
+  

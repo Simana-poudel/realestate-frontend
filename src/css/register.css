@@ -1,0 +1,41 @@
+.signup-page {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.signup-form-wrapper {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.signup-heading {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+  color: #333;
+}
+
+.signup-links {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.signup-links a {
+  color: #007bff;
+  text-decoration: none;
+  margin-right: 10px;
+  transition: color 0.3s ease;
+}
+
+.signup-links a:hover {
+  color: #0056b3;
+}
+
+.login-link {
+  display: block;
+  margin-top: 10px;
+}
