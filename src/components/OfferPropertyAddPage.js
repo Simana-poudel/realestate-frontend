@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
-import {addOfferProperty, createProperty} from '../api';
-import { Navigate } from 'react-router-dom';
+import {addOfferProperty} from '../api';
+import { useNavigate } from 'react-router-dom';
 import NavBar from './Navbar';
 // import { useNavigate } from 'react-router-dom';
 
 const OfferPropertyAddPage = () => {
 
+  const navigate = useNavigate();
   const [propertyImage, setPropertyImage] = useState(null);
   
   const [property, setProperty] = useState({
@@ -41,7 +42,7 @@ const OfferPropertyAddPage = () => {
       ...prevState,
       userId: userId,
     }));
-  }, [1]);
+  }, []);
 
   useEffect(() => {
     const propertyId = localStorage.getItem('propertyId');
@@ -50,7 +51,7 @@ const OfferPropertyAddPage = () => {
       ...prevState,
       propertyId: propertyId,
     }));
-  }, [2]);
+  }, []);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -77,9 +78,21 @@ const OfferPropertyAddPage = () => {
       });
 
       const response = await addOfferProperty(formData);
-
       console.log(response.data); // Handle the response as needed
-      Navigate('/loginhomepage');
+        
+      // Retrieve the saved path from localStorage
+      const redirectPath = localStorage.getItem('redirectPath');
+
+      if (redirectPath) {
+        // Navigate the user back to the saved path
+        navigate(redirectPath);
+
+        // Remove the saved path from localStorage
+        localStorage.removeItem('redirectPath');
+      } else {
+        navigate('/');
+      }
+
     } catch (error) {
       console.log(error);
     }

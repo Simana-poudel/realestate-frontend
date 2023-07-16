@@ -24,6 +24,7 @@ const NavBar = () => {
 
 
       localStorage.removeItem('userId'); // Remove the user ID from local storage
+      localStorage.removeItem('username'); // Remove the username from local storage
       navigate('/');
     };
   
@@ -33,7 +34,7 @@ const NavBar = () => {
     };
 
     const userId = localStorage.getItem('userId'); // Get the user ID from local storage
-
+    const username = localStorage.getItem('username');
     // const handleRegister = () => {
     //   navigate('/register');
     // };
@@ -54,7 +55,7 @@ const NavBar = () => {
              User
            </DropdownToggle>
            <DropdownMenu>
-             <DropdownItem header>{userId}</DropdownItem>
+             <DropdownItem header>{username}</DropdownItem>
              <DropdownItem divider />
              <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
            </DropdownMenu>

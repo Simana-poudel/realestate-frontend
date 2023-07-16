@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getPropertyDetail } from '../api';
 import NavBar from './Navbar';
+import { Modal } from 'reactstrap';
 
 const PropertyDetailPage = () => {
   const { propertyId } = useParams();
   const [data, setData] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showViewDocumentModal, setShowViewDocumentModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,13 +32,46 @@ const PropertyDetailPage = () => {
 
   const handleViewDocument = () => {
     console.log("button is clicked");
-    setShowModal(!showModal);
-  };
+    const userId = localStorage.getItem('userId');
+
+    if (userId) {
+      setShowViewDocumentModal(true);
+    } else {
+        // Save the current path in localStorage
+        localStorage.setItem('redirectPath', window.location.pathname);
+
+        // Show a message and provide a button to redirect to login page
+        setShowLoginModal(true);
+      }
+    };
+
 
   const handleOfferProperty = () => {
-    console.log("offering a property");
-    navigate('/offerproperty')
-  }
+    const userId = localStorage.getItem('userId');
+    localStorage.setItem('redirectPath', window.location.pathname);
+
+    if (userId) {
+    navigate('/offerproperty');
+    } else {
+      setShowLoginModal(true);
+    }
+  };
+  
+  const handleViewDocumentModalClose = () => {
+    setShowViewDocumentModal(false);
+  };
+
+  const handleLoginModalClose = () => {
+    setShowLoginModal(false);
+    localStorage.removeItem('redirectPath');
+
+  };
+
+  const handleLoginModalConfirm = () => {
+    setShowLoginModal(false);
+    navigate('/login');
+  };
+
   
   return (
     <div>
@@ -52,15 +87,24 @@ const PropertyDetailPage = () => {
         <button onClick={handleViewDocument}> View Document</button>
         <button onClick={handleOfferProperty}> Offer property</button>
 
-        {showModal && (
-           <div className="modal-overlay">
+        {showViewDocumentModal  && (
+           <div isOpen={showViewDocumentModal} onClose={handleViewDocumentModalClose} className="modal-overlay">
            <div className="modal-content">
              <h2>Property Document</h2>
              <img src="naksa.jpg" alt="Naksa" />
              <img src="lalpurja.jpg" alt="Lalpurja" />
-             <button onClick={handleViewDocument}>Close</button>
+             <button onClick={handleViewDocumentModalClose}>Close</button>
            </div>
         </div>
+      )}
+
+{showLoginModal && (
+        <Modal isOpen={showLoginModal} onClose={handleLoginModalClose}>
+          <h2>Login Required</h2>
+          <p>You need to login first to view the property document.</p>
+          <button onClick={handleLoginModalConfirm}>Go to Login</button>
+          <button onClick={handleLoginModalClose}>Close</button>
+        </Modal>
       )}
     </div>
   );

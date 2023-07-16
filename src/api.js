@@ -80,9 +80,9 @@ export const createlogin = async (data) => {
   };
 
 // GET request example
-export const getProperties = async () => {
+export const getProperties = async (query) => {
   try {
-    const response = await axios.get(`${baseURL}/api/property`);
+    const response = await axios.get(`${baseURL}/api/property`, { params: query });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -150,7 +150,7 @@ export const getPropertyDocument = async (propertydocumentId) => {
 // GET request example
 export const getOfferedProperty = async (offerpropertyId) => {
   try {
-    const response = await axios.get(`${baseURL}/api/property/${offerpropertyId}`);
+    const response = await axios.get(`${baseURL}/api/offerproperty/${offerpropertyId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -161,7 +161,17 @@ export const getOfferedProperty = async (offerpropertyId) => {
 
 export const addOfferProperty = async (data) => {
   try {
-    const response = await axios.post(`${baseURL}/api/property`, data);
+    const response = await axios.post(`${baseURL}/api/offerproperty`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const fixMeetingWithSeller = async (data) => {
+  try {
+    const response = await axios.post(`${baseURL}/api/fixmeeting`, data);
     return response.data;
   } catch (error) {
     console.error(error);

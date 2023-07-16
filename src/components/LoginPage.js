@@ -25,10 +25,23 @@ const LoginPage = () => {
       
       if (response.userId) {
       localStorage.setItem('userId', response.userId);
+      localStorage.setItem('username', response.username);
       Cookies.set('access_token', response.token);
+      
+      
+      // Retrieve the saved path from localStorage
+      const redirectPath = localStorage.getItem('redirectPath');
 
-      navigate('/');
+      if (redirectPath) {
+        // Navigate the user back to the saved path
+        navigate(redirectPath);
 
+        // Remove the saved path from localStorage
+        localStorage.removeItem('redirectPath');
+      } else {
+        navigate('/');
+      }
+      
       } else {
         // Handle verification failure
         console.error('login failed');
