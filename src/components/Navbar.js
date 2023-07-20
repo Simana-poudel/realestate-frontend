@@ -23,8 +23,7 @@ const NavBar = () => {
     }
 
 
-      localStorage.removeItem('userId'); // Remove the user ID from local storage
-      localStorage.removeItem('username'); // Remove the username from local storage
+      localStorage.clear(); // Remove the user ID from local storage
       navigate('/');
     };
   
@@ -41,7 +40,7 @@ const NavBar = () => {
     return ( 
      <Navbar className="navbar-expand-lg">
        <NavbarBrand className="navbar-brand ml-10 sellbuy" href="/">
-        SellBuy
+       <img src="Vector.png" className='logo-image' />
        </NavbarBrand>
           <Nav className="nav-links">
           <NavItem><Link to="/" className="nav-link">Home</Link></NavItem>
@@ -61,7 +60,7 @@ const NavBar = () => {
            </DropdownMenu>
          </Dropdown>
        ) : (
-            <button className="login-button" onClick={handleLogin}>
+            <button className="button" onClick={handleLogin}>
               Login
             </button>
           )}

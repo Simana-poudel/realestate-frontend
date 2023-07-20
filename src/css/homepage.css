@@ -40,7 +40,7 @@
   display: flex;
 }
 
-.login-button,
+.button,
 .register-button {
   padding-left: 10px;
   padding-right: 10px;

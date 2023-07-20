@@ -5,7 +5,7 @@ function Footer () {
     <footer className="footer">
       <div className="footer-content">
         <p>&copy; {new Date().getFullYear()} SellBuy</p>
-        <img src="logo1.png" className='footer-image' />
+        <img src="Vector.png" className='footer-image' alt="Footer  Image" />
       </div>
     </footer>
   );

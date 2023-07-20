@@ -79,19 +79,9 @@ const OfferPropertyAddPage = () => {
 
       const response = await addOfferProperty(formData);
       console.log(response.data); // Handle the response as needed
-        
-      // Retrieve the saved path from localStorage
-      const redirectPath = localStorage.getItem('redirectPath');
+      const savedPropertyId = response.data._id; // Assuming the ID is available in response.data._id
 
-      if (redirectPath) {
-        // Navigate the user back to the saved path
-        navigate(redirectPath);
-
-        // Remove the saved path from localStorage
-        localStorage.removeItem('redirectPath');
-      } else {
-        navigate('/');
-      }
+      navigate(`/offerproperty/${savedPropertyId}`);
 
     } catch (error) {
       console.log(error);

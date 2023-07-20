@@ -171,7 +171,7 @@ export const addOfferProperty = async (data) => {
 
 export const fixMeetingWithSeller = async (data) => {
   try {
-    const response = await axios.post(`${baseURL}/api/fixmeeting`, data);
+    const response = await axios.post(`${baseURL}/api/offerproperty/fixmeeting`, data);
     return response.data;
   } catch (error) {
     console.error(error);

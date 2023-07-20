@@ -6,14 +6,17 @@ import HomePage from './components/Homepage';
 import PropertyDetail from './components/PropertyDetail';
 import PropertyAddPage from './components/PropertyAddPage';
 import VerifyPage from './components/VerifyPage';
+import OfferPropertyAddPage from './components/OfferPropertyAddPage';
+import OfferPropertyDetailPage from './components/OfferPropertyDetailPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './fonts/Merriweather-Regular.ttf';
 import './css/property.css';
 import './css/footer.css'; // Import the CSS file for styling
 import './css/homepage.css'; // Import the CSS file for styling
 import './css/login.css';
 import './css/propertyadd.css';
 import './css/register.css';
-import OfferPropertyAddPage from './components/OfferPropertyAddPage';
+import './css/propertydetail.css'
 
 
 function App() {
@@ -26,6 +29,7 @@ function App() {
         <Route path="/verify-signup" element={<VerifyPage />} />
         <Route path="/addproperty" element={<PropertyAddPage />} />
         <Route path="/offerproperty" element={<OfferPropertyAddPage />} />
+        <Route path="/offerproperty/:offerpropertyId" element={<OfferPropertyDetailPage />} />
         <Route path="/property/:propertyId" element={<PropertyDetail />} />
       </Routes>
     </Router>
