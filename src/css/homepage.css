@@ -1,65 +1,6 @@
 /* homepage.css */
 /* Adjust the following styles based on your design requirements */
 
-.sellbuy {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-family: 'Arial', sans-serif;
-}
- .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #ffffff;
-  padding: 10px;
-} 
-.nav-links {
-  list-style: none;
-  display: flex;
-}
-
-.nav-link {
-  text-decoration: none;
-  margin-right: 2.5rem;
-  font-size: 1rem;
-
-  color: #333;
-   transition: color 0.3s ease;
- }
-
-.nav-link:hover {
-  color: #555;
-  text-decoration: underline;
-
-}
-
-.cta-buttons {
-  display: flex;
-}
-
-.button,
-.register-button {
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-color: #fff;
-border: none;
-cursor: pointer;
-transition: background-color 0.3s ease;
-border-radius: 4px;
-background: var(--cta-2, #1C3988);
-
-} 
-.login-button:hover,
-.register-button:hover {
-  color: #d8d8d8; 
-
-} 
-
 /* Homepage content styles */
 .homepage-content {
   text-align: center;
@@ -67,14 +8,17 @@ background: var(--cta-2, #1C3988);
 }
 
 .homepage-heading {
-  font-size: 36px;
+  font-size: 43px;
   margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
 }
 
 .homepage-description {
   font-size: 18px;
-  color: #555;
   margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
 }
 
 .search-property {
@@ -94,7 +38,7 @@ background: var(--cta-2, #1C3988);
 }
 
 .search-button {
-  padding: 10px 20px;
+  padding: 10px 10px;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -107,4 +51,203 @@ background: var(--cta-2, #1C3988);
   color: #dbd9d9;
 }
 
+.background-container {
+  width: 90%;
+  max-width: 100%;
+  height: 400px;
+  margin-top: 40px;
+  border-radius: 20px;
+  background-image: url('../../public/Homepage.png');
+  
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+align-items: center;
+}
 
+.content-overlay {
+  /* position: absolute; */
+    margin-top: 20px;
+    align-items: center;
+  color: #fff;
+  /* Add any additional styles for your content overlay */
+}
+
+.search-container {
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 15px;
+  width: 100%;
+}
+
+.search-field {
+  display: flex;
+  margin-right: 130px;
+}
+
+label {
+  margin-right: 10px;
+}
+
+input[type="text"],
+select {
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  background-color: inherit;
+  cursor: pointer;
+}
+
+.location-list {
+  display: none;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  z-index: 1;
+  background-color: #fff;
+  color: rgb(0, 0, 0);
+  border-radius: 4px;
+  cursor: text;
+}
+
+.location-list li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.search-field:hover .location-list {
+  display: block;
+}
+
+.Wheretext{
+  --tw-text-opacity: 1;
+  color: rgb(48 55 47/var(--tw-text-opacity));
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.searchfield{
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.search-button{
+  display: flex;
+  justify-content: flex-end;
+  border-radius: 10px;
+  width: fit-content;
+}
+
+.search-text{
+  background-color: inherit;
+  border:none ;
+  color: #fff;
+  font-weight: 400;
+}
+
+.text{
+  font-family: 'Poppins', sans-serif;
+}
+
+.search-icon{
+  margin-top: 5px;
+  margin-right: 5px;
+size:20px;
+
+}
+
+.homepage-content-title{
+  letter-spacing: -.02em;
+  font-weight: 600;
+  font-size: 32px;
+  margin-top: 25px;
+}
+
+.homepage-content-description{
+  margin: 8px;
+  font-size: 20px;
+  --tw-text-opacity: 1;
+  color: rgb(111 120 109/var(--tw-text-opacity));
+}
+
+.property-land-image-wrapper{
+  width: 90%;
+  max-width: 100%;
+  height: 200px;
+  margin-top: 40px;
+  border-radius: 20px;
+  background-image: url('../../public/Land.jpg');
+  
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Ensure the overlay doesn't overflow the wrapper */
+  transition: transform 0.2s ease; /* Add a smooth transition for the zoom effect */
+  cursor: pointer; /* Show pointer cursor on hover */
+}
+.property-house-image-wrapper{
+  position: relative;
+  width: 90%;
+  max-width: 100%;
+  height: 200px;
+  margin-top: 40px;
+  border-radius: 20px;
+  background-image: url('../../public/House.png');
+  
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Ensure the overlay doesn't overflow the wrapper */
+  transition: transform 0.2s ease; /* Add a smooth transition for the zoom effect */
+  cursor: pointer; /* Show pointer cursor on hover */
+}
+
+.property-house-image-wrapper::before {
+  content: "House";
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  font-size: 32px;
+  padding-top: 20px;
+  align-items: center;  
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity to control the dimming effect */
+  border-radius: 20px;
+}
+
+
+.property-land-image-wrapper::before {
+  content: "Land";
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  font-size: 32px;
+  padding-top: 20px;
+  align-items: center;  
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity to control the dimming effect */
+  border-radius: 20px;
+}
+
+.property-house-image-wrapper:hover {
+  transform: scale(1.05); /* Apply a slight zoom effect on hover */
+}
+
+.property-land-image-wrapper:hover {
+  transform: scale(1.05); /* Apply a slight zoom effect on hover */
+}
+
+.view-more-container{
+  display: flex;
+  justify-content: end;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

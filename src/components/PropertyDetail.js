@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPropertyDetail } from '../api';
+import { getPropertyDetail, fixMeetingWithSeller } from '../api';
 import NavBar from './Navbar';
 import { Col, Container, Modal, Row } from 'reactstrap';
 import IconPage from './IconPage';
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { faArrowAltCircleRight, faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { faArrowAltCircleLeft } from '@fortawesome/free-solid-svg-icons';
 import BriefCharacter from './BriefCharacter';
+import Footer from './footer';
 
 const PropertyDetailPage = () => {
   const { propertyId } = useParams();
   const [data, setData] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showViewDocumentModal, setShowViewDocumentModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
@@ -22,11 +25,17 @@ const PropertyDetailPage = () => {
         const propertyData = await getPropertyDetail(propertyId);
         console.log(propertyData);
         setData(propertyData.data);
+        localStorage.setItem('user-email', data.user.email);
+        localStorage.setItem('url', window.location.href);
+
         console.log(data)
+
       } catch (error) {
         console.error(error);
       }
     }
+
+  
 
     fetchPropertyDetail();
   }, [propertyId]);
@@ -50,6 +59,15 @@ const PropertyDetailPage = () => {
       }
     };
 
+  const handleNextImage = () => {
+setCurrentImageIndex((prevIndex) => (prevIndex +1)% data?.propertyImage?.length);
+console.log();
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) => 
+    prevIndex === 0 ? data.propertyImage.length - 1 : prevIndex - 1);
+  };
 
   const handleOfferProperty = () => {
     const userId = localStorage.getItem('userId');
@@ -79,6 +97,35 @@ const PropertyDetailPage = () => {
     navigate('/login');
   };
 
+  const handlefixMeeting = async () => {
+    const userId = localStorage.getItem('userId');
+    localStorage.setItem('redirectPath', window.location.pathname);
+
+    if (userId) {
+      localStorage.setItem('propertyId', data._id);
+
+      // Prepare the data to pass to the fixMeetingWithSeller function
+      const dataForMeeting = {
+        email: localStorage.getItem('user-email'),
+        url: window.location.href,
+      };
+
+      // Call the fixMeetingWithSeller function with the data
+      try {
+        await fixMeetingWithSeller(dataForMeeting);
+        // Optionally, you can show a success message to the user
+      } catch (error) {
+        console.error(error);
+        // Handle any errors that might occur during the API call
+        // You can display an error message to the user if needed
+      }
+    } else {
+      setShowLoginModal(true);
+    }
+  };
+
+
+
   
   return (
     <div>
@@ -89,8 +136,29 @@ const PropertyDetailPage = () => {
       <Row>
         <Col md="8">
           {data.propertyImage && data.propertyImage.length > 0 && (
-            <img src={data.propertyImage[0].name} alt="PropertyImage" className="property-image" />
+            <div className='main-image-wrapper'>
+            <FontAwesomeIcon
+             icon={faArrowAltCircleLeft} 
+             size="2x" 
+             className='arrow-icon'
+             onClick={handlePrevImage} 
+             />
+
+            <img src={data.propertyImage[currentImageIndex].name} 
+            alt="PropertyImage" 
+            className="property-image" 
+            />
+
+            <FontAwesomeIcon 
+            icon={faArrowAltCircleRight} 
+            size="2x" 
+            className='arrow-icon'
+            onClick={handleNextImage} 
+            />
+
+            </div>
           )}
+
           <Row>
             <Col md="9">
           <div className='iconwithbody'>
@@ -102,7 +170,7 @@ const PropertyDetailPage = () => {
           </div>
           <div className='button-wrapper'>   
           <button onClick={handleOfferProperty} className='button offer-button'>Make an Offer</button>
-          <button onClick={handleOfferProperty} className='button meeting-button'>Fix a Meeting</button>
+          <button onClick={handlefixMeeting} className='button meeting-button'>Fix a Meeting</button>
           </div>
           <div className='description'>
             {data?.description} Eiusmod fugiat officia occaecat sint ullamco veniam voluptate sunt. Dolore incididunt nulla aliquip tempor dolor laboris dolore duis consequat sit sint ut ipsum. Adipisicing ad voluptate consequat ipsum magna in laborum deserunt.
@@ -125,20 +193,33 @@ const PropertyDetailPage = () => {
             <div className='view-document'>
             <button className='button' onClick={handleViewDocument}> View Document</button>
             </div>
-            {showViewDocumentModal  && (
-            <div isOpen={showViewDocumentModal} onClose={handleViewDocumentModalClose} className="modal-overlay">
-            <div className="modal-content">
-            <h2>Property Document</h2>
-            <img src="naksa.jpg" alt="Naksa" />
-            <img src="lalpurja.jpg" alt="Lalpurja" />
-            <button onClick={handleViewDocumentModalClose}>Close</button>
-            </div>
-            </div>
-          )}
+            <div className='user-info-container'>
+              <p className='user-info'>Seller Information</p>
+                  <p>Email: {data?.user?.email}</p>
+                  <p>Contact: {data?.user?.contact}</p>
+                  <p>Name: {data?.user?.name}</p>
+                </div>
+            
       </Col>
       </Row>
     </Container>
-    <IconPage />
+    <Footer />
+    {showViewDocumentModal  && (
+              <div className={`modal-overlay ${showViewDocumentModal ? "active" : ""}`} onClick={handleViewDocumentModalClose}>
+            <div className="modal-content">
+            <h2>Property Document</h2>
+            <div className='document-wrapper'>
+              <p>Naksa</p>
+              <img src="naksa.jpg" alt="Naksa" className='document-image' />
+            </div>
+            <div className='document-wrapper'>
+              <p>Lalpurja</p>
+              <img src="lalpurja.jpg" alt="Lalpurja" className='document-image' />
+            </div>
+            <button className='button' onClick={handleViewDocumentModalClose}>Close</button>
+            </div>
+            </div>
+          )}
   </div>
   );
 };

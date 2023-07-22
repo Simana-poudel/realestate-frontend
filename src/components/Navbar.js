@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { createLogout } from '../api';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faUser } from '@fortawesome/free-regular-svg-icons';
 
 const NavBar = () => {
     const navigate = useNavigate();
@@ -45,13 +48,13 @@ const NavBar = () => {
           <Nav className="nav-links">
           <NavItem><Link to="/" className="nav-link">Home</Link></NavItem>
           <NavItem><Link to="/addproperty" className="nav-link">Sell</Link></NavItem>
-          <NavItem><Link to="/buy" className="nav-link">Buy</Link></NavItem>
+          <NavItem><Link to="/searchproperty" className="nav-link">Buy</Link></NavItem>
           <NavItem><Link to="/aboutus" className="nav-link">About Us</Link></NavItem>
         <div className="cta-buttons">
           {userId ? ( // Check if user ID is present
            <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
            <DropdownToggle className="user-dropdown" caret>
-             User
+           <FontAwesomeIcon icon={faUser} className='user-icon' />
            </DropdownToggle>
            <DropdownMenu>
              <DropdownItem header>{username}</DropdownItem>

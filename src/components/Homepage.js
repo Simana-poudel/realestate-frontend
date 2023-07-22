@@ -3,6 +3,9 @@ import { getProperties } from '../api';
 import NavBar from './Navbar';
 import Footer from './footer';
 import PropertyCard from './PropertyCard';
+import { Col, Row } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 
 const HomePage = () => {
@@ -44,9 +47,6 @@ const HomePage = () => {
     setSelectedPropertyType('');
 
 
-    // Populate cities for the selected district
-    const cities = popularCities[selectedDistrict] || [];
-    // setCityOptions(cities);
   };
 
   const handleCityChange = (event) => {
@@ -86,44 +86,85 @@ const HomePage = () => {
   return (
     <div className='homepage-background'>
       <NavBar />
-      <div className="homepage-content">
-        <h1 className="homepage-heading">SellBy</h1>
-        <p className="homepage-description">Find your dream home or sell your property with ease.</p>
-        <div className="search-property">
-          <select className="search-district search-input" value={selectedDistrict} onChange={handleDistrictChange} onClick={handleSearch}>
-            <option value="">District</option>
-            <option value="Kathmandu">Kathmandu</option>
-            <option value="kaski">Kaski</option>
-            <option value="Chitwan">Chitwan</option>
-            <option value="Lalitpur">Lalitpur</option>
-            <option value="Bhaktapur">Bhaktapur</option>
-            <option value="Palpa">Palpa</option>
-            <option value="Rupandehi">Rupandehi</option>
-            <option value="Kavrepalanchok">Kavrepalanchok</option>
-          </select>
-          <select className="search-input" value={selectedCity} onChange={handleCityChange} onClick={handleSearch}>
-            <option value="">City</option>
-            {cityOptions.map((city) => (
-              <option key={city} value={city}>
-                {city}
-              </option>
-            ))}
-          </select>
-          <select className="search-input" value={selectedPropertyType} onChange={handlePropertyTypeChange} onClick={handleSearch} >
-            <option value="">Property Type</option>
-            <option value="house">House</option>
-            <option value="land">Land</option>
-          </select>
-          <button className="search-button" onClick={handleSearch}>
-            Search</button>
+      <div className='background-container container'>
+        <div className='content-overlay'>
+          <h1 className="homepage-heading">SellBy</h1>
+          <p className="homepage-description">Find your dream home or sell your property with ease.</p>
+          <div class="search-container">
+            <form action="/searchproperty">
+            <Row>
+              <Col md='5'>
+              <div class="search-field">
+                <div>
+                  <div className='Wheretext'>Where</div>
+                <input className='searchfield' type="text" id="location" name="location" placeholder="Enter location..." />
+                <ul class="location-list">
+                  <li value="Kathmandu">Kathmandu</li>
+                  <li value="kaski">Kaski</li>
+                  <li value="Chitwan">Chitwan</li>
+                  <li value="Lalitpur">Lalitpur</li>
+                  <li value="Bhaktapur">Bhaktapur</li>
+                </ul>
+                </div>
+              </div>
+              </Col>
+              <Col md='5'>
+              <div class="search-field">
+                <div>
+                  <div className='Wheretext'>Property Type</div>
+                <input className='searchfield' type="text" id="location" name="location" placeholder="Enter property type ..." />
+                <ul class="location-list">
+                  <li>House</li>
+                  <li>Land</li>
+                </ul>
+                </div>
+              </div>
+              </Col>
+              <Col md='2'>
+              <div className='search-button'>
+              <FontAwesomeIcon icon={faSearch} className='search-icon' />
+
+              <button type="submit" className='text search-text'>Search</button>
+              </div>
+              </Col>
+              </Row>
+            </form>
+          </div>
         </div>
-        <div className="property-card-container">
+      </div>
+      <div className='container property-type-container'>
+        <p className='homepage-content-title'>Select Property Type</p>
+        <p className='homepage-content-description'> choose what are you looking for</p>
+        <div className='image-container'>
+          <Row>
+            <Col md='6'>
+              <div className='property-land-image-wrapper'>
+              </div>
+            </Col>
+            <Col md='6'>
+            <div className='property-house-image-wrapper'>
+              </div>
+            </Col>
+          </Row>
+          
+        </div>
+      </div>
+
+      <div className='container property-type-container'>
+        <p className='homepage-content-title'>Latest House and Land</p>
+        <p className='homepage-content-description'>house and land on sale</p>
+        <div className='image-container'>
+            <div className="property-card-container">
           {data.map((property, index) => (
             <PropertyCard
               key={index}
               property={property}
             />
           ))}
+        </div>
+          <div className='view-more-container'>
+          <button className='view-more button'>View more</button>
+          </div>
         </div>
       </div>
       <Footer />

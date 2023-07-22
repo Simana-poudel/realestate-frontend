@@ -10,13 +10,15 @@ import OfferPropertyAddPage from './components/OfferPropertyAddPage';
 import OfferPropertyDetailPage from './components/OfferPropertyDetailPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './fonts/Merriweather-Regular.ttf';
-import './css/property.css';
 import './css/footer.css'; // Import the CSS file for styling
 import './css/homepage.css'; // Import the CSS file for styling
 import './css/login.css';
 import './css/propertyadd.css';
 import './css/register.css';
 import './css/propertydetail.css'
+import './css/navbar.css'
+import SearchPage from './components/SearchPage';
+
 
 
 function App() {
@@ -31,6 +33,7 @@ function App() {
         <Route path="/offerproperty" element={<OfferPropertyAddPage />} />
         <Route path="/offerproperty/:offerpropertyId" element={<OfferPropertyDetailPage />} />
         <Route path="/property/:propertyId" element={<PropertyDetail />} />
+        <Route path="/searchproperty" element={<SearchPage />} />
       </Routes>
     </Router>
   );

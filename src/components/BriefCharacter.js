@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-const BriefCharacter = (data) => {
+const BriefCharacter = ({data}) => {
 
+    console.log(data);
 return (
 <div className='briefCharacteristics'>
               <h1 className='descriptionTitle'>Brief Characteristics</h1> 
