@@ -199,7 +199,6 @@ console.log();
                   <p>Contact: {data?.user?.contact}</p>
                   <p>Name: {data?.user?.name}</p>
                 </div>
-            
       </Col>
       </Row>
     </Container>
