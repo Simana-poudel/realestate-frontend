@@ -6,27 +6,17 @@ import PropertyCard from './PropertyCard';
 import { Col, Row } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 
 const HomePage = () => {
 
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
+
   const [selectedDistrict, setSelectedDistrict] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
   const [selectedPropertyType, setSelectedPropertyType] = useState('');
 
-
-  const popularCities = {
-    Kathmandu: ['Kathmandu', 'Lalitpur', 'Bhaktapur', 'Kirtipur', 'Madhyapur Thimi'],
-    kaski: ['Pokhara', 'Lekhnath', 'Bharatpur', 'Tansen', 'Damauli'],
-    Chitwan: ['Bharatpur', 'Ratnanagar', 'Khairahani', 'Meghauli', 'Ichhyakamana'],
-    Lalitpur: ['Lalitpur', 'Godavari', 'Mahalaxmi', 'Konjyosom', 'Bagmati'],
-    Bhaktapur: ['Bhaktapur', 'Madhyapur Thimi', 'Nagarkot', 'Changunarayan', 'Suryabinayak'],
-    Palpa: ['Tansen', 'Rampur', 'Rambha', 'Ribdikot', 'Bagnaskali'],
-    Rupandehi: ['Butwal', 'Siddharthanagar', 'Lumbini', 'Devdaha', 'Tilottama'],
-    Kavrepalanchok: ['Banepa', 'Dhulikhel', 'Panauti', 'Panchkhal', 'Bhimeshwor']
-  };
-  
 
   useEffect(() => {
     async function getPropertyData() {
@@ -37,35 +27,24 @@ const HomePage = () => {
     getPropertyData()
   }, []);
 
-  
+
   const handleDistrictChange = (event) => {
-    const selectedDistrict = event.target.value;
-    setSelectedDistrict(selectedDistrict);
-
-    // Reset selected city when district changes
-    setSelectedCity('');
-    setSelectedPropertyType('');
-
-
-  };
-
-  const handleCityChange = (event) => {
-    setSelectedCity(event.target.value);
+    setSelectedDistrict(event.target.textContent);
   };
  
   const handlePropertyTypeChange = (event) => {
-    setSelectedPropertyType(event.target.value);
+    setSelectedPropertyType(event.target.textContent);
   };
 
   const handleSearch = () => {
     // Perform search based on selected district and city
-    // You can implement your search logic here
-    console.log('Perform search:', selectedDistrict, selectedCity, selectedPropertyType);
+    console.log('Perform search:', selectedDistrict, selectedPropertyType);
+
+    navigate(`/searchproperty/${selectedDistrict}/${selectedPropertyType}`);
 
     // Call the API with the selected filters
     getProperties({
       district: selectedDistrict,
-      city: selectedCity,
       propertyType: selectedPropertyType
     }).then((response) => {
       setData(response.data);
@@ -74,14 +53,19 @@ const HomePage = () => {
     });
   };
 
-  // State to hold the options for the city dropdown
-  const [cityOptions, setCityOptions] = useState([]);
+  const handleLandClick = () => {
+    console.log(' landclicked:');
 
-  useEffect(() => {
-    // Populate cities for the selected district
-    const cities = popularCities[selectedDistrict] || [];
-    setCityOptions(cities);
-  }, [selectedDistrict]);
+    navigate(`/searchproperty/land`);
+  };
+
+  const handleHouseClick = () => {
+    console.log(' houseclicked:');
+
+    navigate(`/searchproperty/:propertyType`);
+  };
+
+
 
   return (
     <div className='homepage-background'>
@@ -97,31 +81,43 @@ const HomePage = () => {
               <div class="search-field">
                 <div>
                   <div className='Wheretext'>Where</div>
-                <input className='searchfield' type="text" id="location" name="location" placeholder="Enter location..." />
+                <input className='searchfield'
+                 value={selectedDistrict} 
+                 type="text" 
+                 id="location" 
+                 name="location" 
+                 placeholder="Enter location..."
+                 readOnly />
                 <ul class="location-list">
-                  <li value="Kathmandu">Kathmandu</li>
-                  <li value="kaski">Kaski</li>
-                  <li value="Chitwan">Chitwan</li>
-                  <li value="Lalitpur">Lalitpur</li>
-                  <li value="Bhaktapur">Bhaktapur</li>
-                </ul>
+                    <li onClick={handleDistrictChange} value="Kathmandu">Kathmandu</li>
+                    <li onClick={handleDistrictChange} value="kaski">kaski</li>
+                    <li onClick={handleDistrictChange} value="Chitwan">Chitwan</li>
+                    <li onClick={handleDistrictChange} value="Lalitpur">Lalitpur</li>
+                    <li onClick={handleDistrictChange} value="Bhaktapur">Bhaktapur</li>
+                  </ul>
                 </div>
               </div>
               </Col>
               <Col md='5'>
               <div class="search-field">
                 <div>
-                  <div className='Wheretext'>Property Type</div>
-                <input className='searchfield' type="text" id="location" name="location" placeholder="Enter property type ..." />
+                  <div className='Wheretext' >Property Type</div>
+                <input className='searchfield'
+                value={selectedPropertyType}
+                 type="text" 
+                 id="PropertyType" 
+                 name="propertyType" 
+                 placeholder="Enter property type ..."
+                  />
                 <ul class="location-list">
-                  <li>House</li>
-                  <li>Land</li>
+                  <li onClick={handlePropertyTypeChange} value="house">house</li>
+                  <li onClick={handlePropertyTypeChange} value="land">land</li>
                 </ul>
                 </div>
               </div>
               </Col>
               <Col md='2'>
-              <div className='search-button'>
+              <div className='search-button' onClick={handleSearch}>
               <FontAwesomeIcon icon={faSearch} className='search-icon' />
 
               <button type="submit" className='text search-text'>Search</button>
@@ -138,11 +134,11 @@ const HomePage = () => {
         <div className='image-container'>
           <Row>
             <Col md='6'>
-              <div className='property-land-image-wrapper'>
+              <div onClick={handleLandClick} value="house" className='property-land-image-wrapper'>
               </div>
             </Col>
             <Col md='6'>
-            <div className='property-house-image-wrapper'>
+            <div onClick={handleHouseClick} value="land"className='property-house-image-wrapper'>
               </div>
             </Col>
           </Row>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { getProperties } from '../api';
 import NavBar from './Navbar';
 import Footer from './footer';
@@ -6,11 +7,12 @@ import PropertyCard from './PropertyCard';
 
 
 const SearchPage = () => {
+  const { district, propertyType } = useParams();
 
   const [data, setData] = useState([]);
-  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState(district || '');
   const [selectedCity, setSelectedCity] = useState('');
-  const [selectedPropertyType, setSelectedPropertyType] = useState('');
+  const [selectedPropertyType, setSelectedPropertyType] = useState(propertyType || '');
 
 
   const popularCities = {
@@ -27,13 +29,60 @@ const SearchPage = () => {
 
   useEffect(() => {
     async function getPropertyData() {
-      const property = await getProperties();
-      console.log({ property });
-      setData(property.data);
-    }
-    getPropertyData()
-  }, []);
 
+      if (selectedPropertyType ) {
+        try {
+          // Call the API with the selected filters
+          const response = await getProperties({
+            propertyType: selectedPropertyType
+          });
+
+          // Filter the properties based on the selected district
+          const filteredProperties = response.data.filter((property) => property.propertyType === selectedPropertyType);
+
+          // Update the state with the filtered properties
+          setData(filteredProperties);
+        } catch (error) {
+          console.error('Error fetching properties:', error);
+        }
+      }
+      
+      else {
+        // Check if any selected parameters are present
+      if (selectedDistrict || selectedPropertyType || selectedCity) {
+        try {
+          // Call the API with the selected filters
+          const response = await getProperties({
+            district: selectedDistrict,
+            city: selectedCity,
+            propertyType: selectedPropertyType
+          });
+
+          // Filter the properties based on the selected district
+          const filteredProperties = response.data.filter((property) => property.district === selectedDistrict);
+
+          // Update the state with the filtered properties
+          setData(filteredProperties);
+        } catch (error) {
+          console.error('Error fetching properties:', error);
+        }
+      }
+
+        else {
+          try {
+            // If no selected parameters, call the API without any filters to fetch all properties
+            const response = await getProperties();
+    
+            // Update the state with all properties
+            setData(response.data);
+          } catch (error) {
+            console.error('Error fetching properties:', error);
+          }
+        }      
+      }
+    }
+    getPropertyData();
+  }, [selectedDistrict, selectedCity, selectedPropertyType]);
   
   const handleDistrictChange = (event) => {
     const selectedDistrict = event.target.value;
@@ -41,7 +90,6 @@ const SearchPage = () => {
 
     // Reset selected city when district changes
     setSelectedCity('');
-    setSelectedPropertyType('');
 
 
   };
@@ -54,21 +102,28 @@ const SearchPage = () => {
     setSelectedPropertyType(event.target.value);
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     // Perform search based on selected district and city
     // You can implement your search logic here
     console.log('Perform search:', selectedDistrict, selectedCity, selectedPropertyType);
 
     // Call the API with the selected filters
-    getProperties({
-      district: selectedDistrict,
-      city: selectedCity,
-      propertyType: selectedPropertyType
-    }).then((response) => {
-      setData(response.data);
-    }).catch((error) => {
+    try {
+      // Call the API with the selected filters
+      const response = await getProperties({
+        district: selectedDistrict,
+        city: selectedCity,
+        propertyType: selectedPropertyType
+      });
+  
+      // Filter the properties based on the selected district
+      const filteredProperties = response.data.filter((property) => property.district === selectedDistrict);
+  
+      // Update the state with the filtered properties
+      setData(filteredProperties);
+    } catch (error) {
       console.error('Error fetching properties:', error);
-    });
+    }
   };
 
   // State to hold the options for the city dropdown
@@ -86,7 +141,7 @@ const SearchPage = () => {
       <div className="homepage-content">
         <div className="search-property">
           <select className="search-district search-input" value={selectedDistrict} onChange={handleDistrictChange} onClick={handleSearch}>
-            <option value="">District</option>
+            <option value="all">District</option>
             <option value="Kathmandu">Kathmandu</option>
             <option value="kaski">Kaski</option>
             <option value="Chitwan">Chitwan</option>
@@ -105,9 +160,9 @@ const SearchPage = () => {
             ))}
           </select>
           <select className="search-input" value={selectedPropertyType} onChange={handlePropertyTypeChange} onClick={handleSearch} >
-            <option value="">Property Type</option>
+            <option value="all">Property Type</option>
             <option value="house">House</option>
-            <option value="land">Land</option>
+            <option value="land">land</option>
           </select>
           <button className="search-button" onClick={handleSearch}>
             Search</button>

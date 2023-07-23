@@ -33,7 +33,10 @@ function App() {
         <Route path="/offerproperty" element={<OfferPropertyAddPage />} />
         <Route path="/offerproperty/:offerpropertyId" element={<OfferPropertyDetailPage />} />
         <Route path="/property/:propertyId" element={<PropertyDetail />} />
+        <Route path="/searchproperty/:district/:propertyType" element={<SearchPage />} />
         <Route path="/searchproperty" element={<SearchPage />} />
+        <Route path="/searchproperty/:propertyType" element={<SearchPage />} />
+
       </Routes>
     </Router>
   );
