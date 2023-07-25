@@ -10,6 +10,8 @@ import { faArrowAltCircleRight, faLocationDot } from '@fortawesome/free-solid-sv
 import { faArrowAltCircleLeft } from '@fortawesome/free-solid-svg-icons';
 import BriefCharacter from './BriefCharacter';
 import Footer from './footer';
+import Leaflet from './Leaflet';
+import LeafletLocation from './LeafletLocation';
 
 const PropertyDetailPage = () => {
   const { propertyId } = useParams();
@@ -175,12 +177,16 @@ console.log();
           <div className='description'>
             {data?.description} Eiusmod fugiat officia occaecat sint ullamco veniam voluptate sunt. Dolore incididunt nulla aliquip tempor dolor laboris dolore duis consequat sit sint ut ipsum. Adipisicing ad voluptate consequat ipsum magna in laborum deserunt.
           </div>
-          <div className='location'>Location</div>
+          <div className='location'>Location
+          <div>
+          <LeafletLocation coordinates={data?.coordinates} />
+          </div>
+          </div>
 
           {showLoginModal && (
             <Modal isOpen={showLoginModal} onClose={handleLoginModalClose}>
             <h2>Login Required</h2>
-            <p>You need to login first to view the property document.</p>
+            <p>You need to login first.</p>
             <button onClick={handleLoginModalConfirm}>Go to Login</button>
             <button onClick={handleLoginModalClose}>Close</button>
             </Modal>

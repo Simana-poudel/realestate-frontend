@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import {createProperty} from '../api';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import NavBar from './Navbar';
+import Leaflet from './Leaflet';
 // import { useNavigate } from 'react-router-dom';
 
 const PropertyAddPage = () => {
 
   const [propertyImage, setPropertyImage] = useState(null);
-  
+  const navigate = useNavigate();
+
+  // New state to store coordinates
+  const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
+
   const [property, setProperty] = useState({
     propertyType: '',
     title: '',
@@ -42,6 +47,11 @@ const PropertyAddPage = () => {
     }));
   }, []);
 
+  // Function to handle coordinates change
+  const handleCoordinatesChange = (coords) => {
+    setCoordinates(coords);
+  };
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     setPropertyImage(file);
@@ -66,10 +76,14 @@ const PropertyAddPage = () => {
         formData.append(key, property[key]);
       });
 
+      // Append coordinates to the formData object
+      formData.append('latitude', coordinates.latitude);
+      formData.append('longitude', coordinates.longitude);
+
       const response = await createProperty(formData);
 
       console.log(response.data); // Handle the response as needed
-      Navigate('/loginhomepage');
+      navigate('/loginhomepage');
     } catch (error) {
       console.log(error);
     }
@@ -156,148 +170,148 @@ const PropertyAddPage = () => {
           />
         </FormGroup>
         <FormGroup>
-  <Label for="size">Size</Label>
-  <Input
-    type="number"
-    name="size"
-    id="size"
-    value={property.size}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+          <Label for="size">Size</Label>
+          <Input
+            type="number"
+            name="size"
+            id="size"
+            value={property.size}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-<FormGroup>
-  <Label for="area">Area</Label>
-  <Input
-    type="number"
-    name="area"
-    id="area"
-    value={property.area}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+        <FormGroup>
+          <Label for="area">Area</Label>
+          <Input
+            type="number"
+            name="area"
+            id="area"
+            value={property.area}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-<FormGroup>
-  <Label for="rooms">Rooms</Label>
-  <Input
-    type="number"
-    name="rooms"
-    id="rooms"
-    value={property.rooms}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+        <FormGroup>
+          <Label for="rooms">Rooms</Label>
+          <Input
+            type="number"
+            name="rooms"
+            id="rooms"
+            value={property.rooms}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-<FormGroup>
-  <Label for="parkingSpace">Parking Space</Label>
-  <Input
-    type="number"
-    name="parkingSpace"
-    id="parkingSpace"
-    value={property.parkingSpace}
-    onChange={handleChange}
-    disabled={property.propertyType !== 'house'} // Disable if propertyType is not 'house'
-  />
-</FormGroup>
+        <FormGroup>
+          <Label for="parkingSpace">Parking Space</Label>
+          <Input
+            type="number"
+            name="parkingSpace"
+            id="parkingSpace"
+            value={property.parkingSpace}
+            onChange={handleChange}
+            disabled={property.propertyType !== 'house'} // Disable if propertyType is not 'house'
+          />
+        </FormGroup>
 
-<FormGroup>
-  <Label for="kitchen">Kitchen</Label>
-  <Input
-    type="number"
-    name="kitchen"
-    id="kitchen"
-    value={property.kitchen}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+        <FormGroup>
+          <Label for="kitchen">Kitchen</Label>
+          <Input
+            type="number"
+            name="kitchen"
+            id="kitchen"
+            value={property.kitchen}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-<FormGroup>
-  <Label for="bedroom">Bedroom</Label>
-  <Input
-    type="number"
-    name="bedroom"
-    id="bedroom"
-    value={property.bedroom}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+        <FormGroup>
+          <Label for="bedroom">Bedroom</Label>
+          <Input
+            type="number"
+            name="bedroom"
+            id="bedroom"
+            value={property.bedroom}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-<FormGroup>
-  <Label for="diningRoom">Dining Room</Label>
-  <Input
-    type="number"
-    name="diningRoom"
-    id="diningRoom"
-    value={property.diningRoom}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+        <FormGroup>
+          <Label for="diningRoom">Dining Room</Label>
+          <Input
+            type="number"
+            name="diningRoom"
+            id="diningRoom"
+            value={property.diningRoom}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-<FormGroup>
-  <Label for="hall">Hall</Label>
-  <Input
-    type="number"
-    name="hall"
-    id="hall"
-    value={property.hall}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+        <FormGroup>
+          <Label for="hall">Hall</Label>
+          <Input
+            type="number"
+            name="hall"
+            id="hall"
+            value={property.hall}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-<FormGroup>
-  <Label for="bathroom">Bathroom</Label>
-  <Input
-    type="number"
-    name="bathroom"
-    id="bathroom"
-    value={property.bathroom}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+        <FormGroup>
+          <Label for="bathroom">Bathroom</Label>
+          <Input
+            type="number"
+            name="bathroom"
+            id="bathroom"
+            value={property.bathroom}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-<FormGroup>
-  <Label for="noOfFloors">Number of Floors</Label>
-  <Input
-    type="number"
-    name="noOfFloors"
-    id="noOfFloors"
-    value={property.noOfFloors}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+        <FormGroup>
+          <Label for="noOfFloors">Number of Floors</Label>
+          <Input
+            type="number"
+            name="noOfFloors"
+            id="noOfFloors"
+            value={property.noOfFloors}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-<FormGroup>
-  <Label for="builtYear">Built Year</Label>
-  <Input
-    type="number"
-    name="builtYear"
-    id="builtYear"
-    value={property.builtYear}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+        <FormGroup>
+          <Label for="builtYear">Built Year</Label>
+          <Input
+            type="number"
+            name="builtYear"
+            id="builtYear"
+            value={property.builtYear}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-<FormGroup>
-  <Label for="usedArea">Used Area</Label>
-  <Input
-    type="number"
-    name="usedArea"
-    id="usedArea"
-    value={property.usedArea}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+        <FormGroup>
+          <Label for="usedArea">Used Area</Label>
+          <Input
+            type="number"
+            name="usedArea"
+            id="usedArea"
+            value={property.usedArea}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
         {/* Add other input fields here based on the property schema */}
         <FormGroup>
@@ -310,6 +324,13 @@ const PropertyAddPage = () => {
             required
           />
         </FormGroup>
+        <FormGroup>
+      <Label for="coordinates">Location</Label>
+      {/* Pass the handleCoordinatesChange function as the onCoordinatesChange prop */}
+      <Leaflet onCoordinatesChange={handleCoordinatesChange} />
+    </FormGroup>
+
+        
         <Button color="primary" type="submit">Add Property</Button>
       </Form>
     </div>
