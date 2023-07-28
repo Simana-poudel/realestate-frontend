@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { getProperties } from '../api';
-import NavBar from './Navbar';
+import NavBar from './NavBar';
 import Footer from './footer';
 import PropertyCard from './PropertyCard';
 import { Col, Row } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 
 const HomePage = () => {
-
   const [data, setData] = useState([]);
   const navigate = useNavigate();
 
@@ -69,7 +68,6 @@ const HomePage = () => {
 
   return (
     <div className='homepage-background'>
-      <NavBar />
       <div className='background-container container'>
         <div className='content-overlay'>
           <h1 className="homepage-heading">SellBy</h1>
@@ -163,7 +161,6 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

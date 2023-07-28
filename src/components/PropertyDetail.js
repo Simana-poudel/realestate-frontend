@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getPropertyDetail, fixMeetingWithSeller } from '../api';
-import NavBar from './Navbar';
+import NavBar from './NavBar';
 import { Col, Container, Modal, Row } from 'reactstrap';
 import IconPage from './IconPage';
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
@@ -131,7 +131,6 @@ console.log();
   
   return (
     <div>
-      <NavBar />
       {/* data : {JSON.stringify(data)} */}
       <Container>
       <h1 className='property-title'>{data?.title}</h1>
@@ -208,7 +207,6 @@ console.log();
       </Col>
       </Row>
     </Container>
-    <Footer />
     {showViewDocumentModal  && (
               <div className={`modal-overlay ${showViewDocumentModal ? "active" : ""}`} onClick={handleViewDocumentModalClose}>
             <div className="modal-content">

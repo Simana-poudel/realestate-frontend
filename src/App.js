@@ -1,13 +1,4 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './components/LoginPage';
-import Register from './components/RegisterPage';
-import HomePage from './components/Homepage';
-import PropertyDetail from './components/PropertyDetail';
-import PropertyAddPage from './components/PropertyAddPage';
-import VerifyPage from './components/VerifyPage';
-import OfferPropertyAddPage from './components/OfferPropertyAddPage';
-import OfferPropertyDetailPage from './components/OfferPropertyDetailPage';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './fonts/Merriweather-Regular.ttf';
 import './css/footer.css'; // Import the CSS file for styling
@@ -16,29 +7,28 @@ import './css/login.css';
 import './css/propertyadd.css';
 import './css/register.css';
 import './css/propertydetail.css'
-import './css/navbar.css'
-import SearchPage from './components/SearchPage';
-
-
+import './css/navbar.css';
+import './css/message.css';
+import { io } from 'socket.io-client';
+import { Container } from '@mui/material';
+import NavBar from './components/NavBar';
+import Footer from './components/footer';
+import { Outlet } from 'react-router-dom';
 
 function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route exact path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/verify-signup" element={<VerifyPage />} />
-        <Route path="/addproperty" element={<PropertyAddPage />} />
-        <Route path="/offerproperty" element={<OfferPropertyAddPage />} />
-        <Route path="/offerproperty/:offerpropertyId" element={<OfferPropertyDetailPage />} />
-        <Route path="/property/:propertyId" element={<PropertyDetail />} />
-        <Route path="/searchproperty/:district/:propertyType" element={<SearchPage />} />
-        <Route path="/searchproperty" element={<SearchPage />} />
-        <Route path="/searchproperty/:propertyType" element={<SearchPage />} />
+  const [socket, setSocket] = useState(null);
 
-      </Routes>
-    </Router>
+
+  useEffect(() => {
+    setSocket(io('http://localhost:5000')); // Replace with your server URL
+}, []);
+
+return (
+    <Container>
+      <NavBar />
+      <Outlet context={{socket}}/>
+      <Footer />
+    </Container>
   );
 }
 

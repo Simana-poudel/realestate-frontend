@@ -6,21 +6,17 @@ import Cookies from 'js-cookie';
 const baseURL = 'http://localhost:5000';
 
 
-// axios.interceptors.request.use(
-//   (config) => {
-//     config.withCredentials = true;
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
+// Create an Axios instance with the base URL
+const axiosInstance = axios.create({
+  baseURL,
+  withCredentials: true, // Include credentials in the request
+});
 
 
 //post request for signup
 export const createAccount = async (data) => {
     try {
-      const response = await axios.post(`${baseURL}/api/user/auth/register`, data);
+      const response = await axiosInstance.post(`${baseURL}/api/user/auth/register`, data);
       alert(response.data.message);
       return response.data.data;
     } catch (error) {
@@ -32,7 +28,7 @@ export const createAccount = async (data) => {
   //post request for verifyuser
 export const createVerifyUser = async (data) => {
   try {
-    const response = await axios.post(`${baseURL}/api/user/auth/verify-signup`, data);
+    const response = await axiosInstance.post(`${baseURL}/api/user/auth/verify-signup`, data);
     return response.data.data;
   } catch (error) {
     console.error(error);
@@ -43,7 +39,7 @@ export const createVerifyUser = async (data) => {
   //post request for login
 export const createlogin = async (data) => {
     try {
-      const response = await axios.post(`${baseURL}/api/user/auth/login`, data);
+      const response = await axiosInstance.post(`${baseURL}/api/user/auth/login`, data);
       return response.data.data;
     } catch (error) {
       console.error(error);
@@ -55,7 +51,7 @@ export const createlogin = async (data) => {
     try {
       const token = Cookies.get('access_token'); // Retrieve the token from the cookie
       console.log(token)
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${baseURL}/api/user/auth/logout`, null, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -71,7 +67,7 @@ export const createlogin = async (data) => {
 
   export const createProperty = async (data) => {
     try {
-      const response = await axios.post(`${baseURL}/api/property`, data);
+      const response = await axiosInstance.post(`${baseURL}/api/property`, data);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -82,7 +78,7 @@ export const createlogin = async (data) => {
 // GET request example
 export const getProperties = async (query) => {
   try {
-    const response = await axios.get(`${baseURL}/api/property`, { params: query });
+    const response = await axiosInstance.get(`${baseURL}/api/property`, { params: query });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -94,7 +90,7 @@ export const getProperties = async (query) => {
 // GET request example
 export const getPropertyDetail = async (propertyId) => {
   try {
-    const response = await axios.get(`${baseURL}/api/property/${propertyId}`);
+    const response = await axiosInstance.get(`${baseURL}/api/property/${propertyId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -105,7 +101,7 @@ export const getPropertyDetail = async (propertyId) => {
 
 export const updatePropertyDetail = async (propertyId) => {
   try {
-    const response = await axios.put(`${baseURL}/api/property/${propertyId}`);
+    const response = await axiosInstance.put(`${baseURL}/api/property/${propertyId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -116,7 +112,7 @@ export const updatePropertyDetail = async (propertyId) => {
 
 export const deletePropertyDetail = async (propertyId) => {
   try {
-    const response = await axios.delete(`${baseURL}/api/property/${propertyId}`);
+    const response = await axiosInstance.delete(`${baseURL}/api/property/${propertyId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -127,7 +123,7 @@ export const deletePropertyDetail = async (propertyId) => {
 
 export const addPropertyDocument = async (data) => {
   try {
-    const response = await axios.post(`${baseURL}/api/property`, data);
+    const response = await axiosInstance.post(`${baseURL}/api/property`, data);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -138,7 +134,7 @@ export const addPropertyDocument = async (data) => {
 // GET request example
 export const getPropertyDocument = async (propertydocumentId) => {
   try {
-    const response = await axios.get(`${baseURL}/api/property/${propertydocumentId}`);
+    const response = await axiosInstance.get(`${baseURL}/api/property/${propertydocumentId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -150,7 +146,7 @@ export const getPropertyDocument = async (propertydocumentId) => {
 // GET request example
 export const getOfferedProperty = async (offerpropertyId) => {
   try {
-    const response = await axios.get(`${baseURL}/api/offerproperty/${offerpropertyId}`);
+    const response = await axiosInstance.get(`${baseURL}/api/offerproperty/${offerpropertyId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -161,7 +157,7 @@ export const getOfferedProperty = async (offerpropertyId) => {
 
 export const addOfferProperty = async (data) => {
   try {
-    const response = await axios.post(`${baseURL}/api/offerproperty`, data);
+    const response = await axiosInstance.post(`${baseURL}/api/offerproperty`, data);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -171,7 +167,7 @@ export const addOfferProperty = async (data) => {
 
 export const fixMeetingWithSeller = async (data) => {
   try {
-    const response = await axios.post(`${baseURL}/api/offerproperty/fixmeeting`, data);
+    const response = await axiosInstance.post(`${baseURL}/api/offerproperty/fixmeeting`, data);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -183,7 +179,7 @@ export const fixMeetingWithSeller = async (data) => {
 
 export const getCompletedTodo = async (id) => {
   try {
-    const response = await axios.get(`${baseURL}/api/todo/completed`);
+    const response = await axiosInstance.get(`${baseURL}/api/todo/completed`);
     return response.data.data;
   } catch (error) {
     console.error(error);
@@ -194,7 +190,7 @@ export const getCompletedTodo = async (id) => {
 // PUT request example
 export const updateTodo = async (id, data) => {
   try {
-    const response = await axios.patch(`${baseURL}/api/todo/${id}`, data);
+    const response = await axiosInstance.patch(`${baseURL}/api/todo/${id}`, data);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -205,10 +201,12 @@ export const updateTodo = async (id, data) => {
 // DELETE request example
 export const deleteTodo = async (id) => {
   try {
-    const response = await axios.delete(`${baseURL}/api/todo/${id}`);
+    const response = await axiosInstance.delete(`${baseURL}/api/todo/${id}`);
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
+
+export default axiosInstance;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getOfferedProperty, fixMeetingWithSeller } from '../api';
-import NavBar from './Navbar';
+import NavBar from './NavBar';
 import { Modal } from 'reactstrap';
 
 const OfferPropertyDetailPage = () => {
@@ -65,7 +65,6 @@ const OfferPropertyDetailPage = () => {
   
   return (
     <div>
-      <NavBar />
       {/* data : {JSON.stringify(data)} */}
       <div className='container'>
       <h1 className='property-title'>property:{data?.title}</h1>

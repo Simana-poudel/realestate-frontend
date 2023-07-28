@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import {createProperty} from '../api';
 import { useNavigate } from 'react-router-dom';
-import NavBar from './Navbar';
+import NavBar from './NavBar';
 import Leaflet from './Leaflet';
 // import { useNavigate } from 'react-router-dom';
 
@@ -94,7 +94,6 @@ const PropertyAddPage = () => {
 
   return (
     <div>
-      <NavBar />
     <div className='container add-property-container'>
       <h2>Add Property</h2>
       <Form onSubmit={ handleSubmit } className='property-add-container'>

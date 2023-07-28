@@ -35,6 +35,11 @@ const NavBar = () => {
       navigate('/login');
     };
 
+    const handleMessage =() => {
+       
+      navigate('/chats');
+    };
+
     const userId = localStorage.getItem('userId'); // Get the user ID from local storage
     const username = localStorage.getItem('username');
     // const handleRegister = () => {
@@ -59,6 +64,7 @@ const NavBar = () => {
            <DropdownMenu>
              <DropdownItem header>{username}</DropdownItem>
              <DropdownItem divider />
+             <DropdownItem onClick={handleMessage}>Message</DropdownItem>
              <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
            </DropdownMenu>
          </Dropdown>

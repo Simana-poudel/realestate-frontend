@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getProperties } from '../api';
-import NavBar from './Navbar';
+import NavBar from './NavBar';
 import Footer from './footer';
 import PropertyCard from './PropertyCard';
 
@@ -137,7 +137,6 @@ const SearchPage = () => {
 
   return (
     <div className='homepage-background'>
-      <NavBar />
       <div className="homepage-content">
         <div className="search-property">
           <select className="search-district search-input" value={selectedDistrict} onChange={handleDistrictChange} onClick={handleSearch}>
