@@ -10,7 +10,6 @@ import OfferPropertyDetailPage from "./components/OfferPropertyDetailPage";
 import PropertyDetailPage from "./components/PropertyDetail";
 import SearchPage from "./components/SearchPage";
 import UserList from "./components/UserList";
-import Room from "./components/Room";
 
 const router = createBrowserRouter([
     {
@@ -66,8 +65,12 @@ const router = createBrowserRouter([
                 element: <UserList />
             },
             {
+                path:"/room/:roomId/:ownername",
+                element: <UserList />
+            },
+            {
                 path:"/room/:roomId",
-                element: <Room />
+                element: <UserList />
             },
 
         ]

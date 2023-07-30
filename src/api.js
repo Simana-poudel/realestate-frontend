@@ -175,6 +175,18 @@ export const fixMeetingWithSeller = async (data) => {
   }
 };
 
+// GET request example
+export const getrooms = async () => {
+  try {
+    const response = await axiosInstance.get(`${baseURL}/api/room`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 
 
 export const getCompletedTodo = async (id) => {

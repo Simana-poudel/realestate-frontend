@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
-import NavBar from './NavBar';
-import { io } from 'socket.io-client';
-import { Box, Button, Card, Container, Divider, IconButton, InputAdornment, InputLabel, List, ListItem, ListItemText, OutlinedInput, TextField, Typography } from '@mui/material';
+import { Box, Card,IconButton, InputAdornment, InputLabel,OutlinedInput,Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { Col, Row } from 'reactstrap';
 
 function Message() {
   const { socket } = useOutletContext();
@@ -12,6 +9,8 @@ function Message() {
   const [chat, setChat] = useState([]);
   const [typing, setTyping] = useState(false); 
   const {roomId} = useParams();
+  const {ownername} = useParams();
+
 
 
   useEffect(() => {
@@ -59,10 +58,16 @@ function Message() {
             {
               roomId && <Typography> Room : {roomId}</Typography>
             }
+            {
+              ownername && <Typography> Messeging with : {ownername}</Typography>
+            }
+
 
             <Box sx={{marginBottom: 5}}>
-            {chat.map((data) => (
-              <Typography sx={{textAlign: data.received ? "left" :"right"}} key={data.message}>{data.message}</Typography>
+            {chat.map((data, index) => (
+              <Typography sx={{textAlign: data.received ? "left" :"right"}} key={index}>
+                {data.message}
+                </Typography>
             ))}
             </Box>
           <Box component="form" onSubmit={handleForm}>

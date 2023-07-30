@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getPropertyDetail, fixMeetingWithSeller } from '../api';
-import NavBar from './NavBar';
 import { Col, Container, Modal, Row } from 'reactstrap';
-import IconPage from './IconPage';
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowAltCircleRight, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { faArrowAltCircleLeft } from '@fortawesome/free-solid-svg-icons';
 import BriefCharacter from './BriefCharacter';
-import Footer from './footer';
-import Leaflet from './Leaflet';
 import LeafletLocation from './LeafletLocation';
+import MessageOutlined from '@mui/icons-material/MessageOutlined';
+import { v4 as uuidv4 } from 'uuid';
 
 const PropertyDetailPage = () => {
   const { propertyId } = useParams();
@@ -20,6 +18,9 @@ const PropertyDetailPage = () => {
   const [showViewDocumentModal, setShowViewDocumentModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
+  const roomId = uuidv4();
+  const Ownername = data?.user?.name;
+
 
   useEffect(() => {
     async function fetchPropertyDetail() {
@@ -126,7 +127,12 @@ console.log();
     }
   };
 
+  //creating new room
+  function createNewRoom () {
+    console.log(Ownername);
+    navigate(`/room/${roomId}/${Ownername}`);
 
+  }
 
   
   return (
@@ -203,6 +209,7 @@ console.log();
                   <p>Email: {data?.user?.email}</p>
                   <p>Contact: {data?.user?.contact}</p>
                   <p>Name: {data?.user?.name}</p>
+                  <MessageOutlined  onClick={createNewRoom}/>
                 </div>
       </Col>
       </Row>
