@@ -1,25 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Button, Row, Col } from 'reactstrap';
 import {addOfferProperty} from '../api';
 import { useNavigate } from 'react-router-dom';
-import NavBar from './NavBar';
+import Leaflet from './Leaflet';
+import Cookies from 'js-cookie';
+
 // import { useNavigate } from 'react-router-dom';
+
+const popularCities = {
+  Kathmandu: ['Kathmandu', 'Lalitpur', 'Bhaktapur', 'Kirtipur', 'Madhyapur Thimi'],
+  kaski: ['Pokhara', 'Lekhnath', 'Bharatpur', 'Tansen', 'Damauli'],
+  Chitwan: ['Bharatpur', 'Ratnanagar', 'Khairahani', 'Meghauli', 'Ichhyakamana'],
+  Lalitpur: ['Lalitpur', 'Godavari', 'Mahalaxmi', 'Konjyosom', 'Bagmati'],
+  Bhaktapur: ['Bhaktapur', 'Madhyapur Thimi', 'Nagarkot', 'Changunarayan', 'Suryabinayak'],
+  Palpa: ['Tansen', 'Rampur', 'Rambha', 'Ribdikot', 'Bagnaskali'],
+  Rupandehi: ['Butwal', 'Siddharthanagar', 'Lumbini', 'Devdaha', 'Tilottama'],
+  Kavrepalanchok: ['Banepa', 'Dhulikhel', 'Panauti', 'Panchkhal', 'Bhimeshwor']
+};
 
 const OfferPropertyAddPage = () => {
 
   const navigate = useNavigate();
-  const [propertyImage, setPropertyImage] = useState(null);
-  
+  const [propertyImage, setPropertyImage] = useState([]);
+  const [selectedPropertyType, setSelectedPropertyType] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+
+   // Use the selected district to get the cities for the dropdown
+   const cities = popularCities[selectedDistrict] || [];
+
+   // New state to store coordinates
+   const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
+ 
   const [property, setProperty] = useState({
     propertyType: '',
     title: '',
     description: '',
     message: '',
-    price: 0,
+    price: '',
     district: '',
     city: '',
-    size: 0,
-    area: 0,
+    size: '',
+    area: '',
     rooms: 0,
     parkingSpace: 0,
     kitchen: 0,
@@ -28,15 +50,15 @@ const OfferPropertyAddPage = () => {
     hall: 0,
     bathroom: 0,
     noOfFloors: 0,
-    builtYear: 0,
-    usedArea: 0,
+    builtYear: '',
+    usedArea: '',
     propertyImage: [],
   });
 
   // const navigate = useNavigate();
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
+    const userId = Cookies.get('userId');
     // Set the retrieved userId directly in the property object
     setProperty((prevState) => ({
       ...prevState,
@@ -53,9 +75,13 @@ const OfferPropertyAddPage = () => {
     }));
   }, []);
 
+  const handleCoordinatesChange = (coords) => {
+    setCoordinates(coords);
+  };
+
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    setPropertyImage(file);
+    const files = Array.from(e.target.files || []);
+    setPropertyImage((prevImage) => [...prevImage, ...files.slice(0, 10)]);
   };
 
   const handleChange = (e) => {
@@ -70,12 +96,19 @@ const OfferPropertyAddPage = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("testImage", propertyImage);
-      
+
+      propertyImage.forEach((image, index) => {
+      formData.append('testImage', image);
+    });      
       // Append other property data fields to the formData object
       Object.keys(property).forEach((key) => {
         formData.append(key, property[key]);
       });
+
+      // Append coordinates to the formData object
+      formData.append('latitude', coordinates.latitude);
+      formData.append('longitude', coordinates.longitude);
+
 
       const response = await addOfferProperty(formData);
       console.log(response.data); // Handle the response as needed
@@ -89,12 +122,41 @@ const OfferPropertyAddPage = () => {
   };
   
 
+  const handlePropertyTypeChange = (e) => {
+    const { value } = e.target;
+    setSelectedPropertyType(value);
+    setProperty((prevState) => ({
+      ...prevState,
+      propertyType: value,
+    }));
+  };
+
+  const handleDistrictChange = (e) => {
+    const { value } = e.target;
+    setSelectedDistrict(value);
+    setProperty((prevState) => ({
+      ...prevState,
+      district: value,
+    }));
+    console.log(value);
+    setSelectedCity(''); // Reset the selected city when the district changes
+  };
+
+  const handleCityChange = (e) => {
+    const { value } = e.target;
+    setSelectedCity(value);
+    setProperty((prevState) => ({
+      ...prevState,
+      city: value,
+    }));
+  };
+  
     // TODO: Add property to the database
 
   return (
     <div>
     <div className='container add-property-container'>
-      <h2>Add Property</h2>
+      <h2>Add your offer property here</h2>
       <Form onSubmit={ handleSubmit } className='property-add-container'>
         {/* Remove the user input field since the userId is retrieved from the local storage */}
         <FormGroup>
@@ -104,6 +166,7 @@ const OfferPropertyAddPage = () => {
             name="propertyType"
             id="propertyType"
             value={property.propertyType}
+            onClick={handlePropertyTypeChange}
             onChange={handleChange}
             required
           >
@@ -135,22 +198,24 @@ const OfferPropertyAddPage = () => {
           />
           </FormGroup>
           <FormGroup>
-          <Label for="message">Message</Label>
+          <Label for="message">Message to seller</Label>
           <Input
             type="text"
             name="message"
             id="message"
+            placeholder='Write your message to the seller here'
             value={property.message}
             onChange={handleChange}
             required
           />
         </FormGroup>
         <FormGroup>
-          <Label for="price">price</Label>
+        <Label for="price">Price:</Label>
           <Input
             type="number"
             name="price"
             id="price"
+            placeholder='Write full price of your property here in (Rs)'
             value={property.price}
             onChange={handleChange}
             required
@@ -159,166 +224,191 @@ const OfferPropertyAddPage = () => {
         <FormGroup>
           <Label for="district">district</Label>
           <Input
-            type="text"
+            type="select"
             name="district"
             id="district"
-            value={property.district}
-            onChange={handleChange}
+            value={selectedDistrict}
+            onChange={handleDistrictChange}
             required
-          />
+            >
+            <option value=''>Select District</option>
+            {Object.keys(popularCities).map((district) => (
+              <option key={district} value={district}>
+                {district}
+              </option>
+            ))}
+          </Input>
         </FormGroup>
+
+        {selectedDistrict && (
+            <FormGroup>
+              <Label for='city'>City</Label>
+              <Input
+                type='select'
+                name='city'
+                id='city'
+                value={selectedCity}
+                onChange={handleCityChange}
+                required
+              >
+                <option value=''>Select City</option>
+                {cities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </Input>
+            </FormGroup>
+          )}
+
         <FormGroup>
-          <Label for="city">city</Label>
+        <Label for="size">Size (in Anna)</Label>
+            <Input
+              type="number"
+              name="size"
+              id="size"
+              value={property.size}
+              onChange={handleChange}
+              required
+            />
+          </FormGroup>          
+
+          <FormGroup>
+            <Label for="area">Area</Label>
+            <Input
+              type="number"
+              name="area"
+              id="area"
+              value={property.area}
+              onChange={handleChange}
+              required
+            />
+          </FormGroup>          
+
+          {selectedPropertyType === 'house' && (
+        
+        <div className='property-add-details-container'> 
+          <h4 className='property-details-h4'>Property details</h4>
+          <Row>
+            <Col md="6">
+
+        <FormGroup>
+          <Label for="rooms">Rooms</Label>
           <Input
-            type="text"
-            name="city"
-            id="city"
-            value={property.city}
+            type="number"
+            name="rooms"
+            id="rooms"
+            value={property.rooms}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label for="parkingSpace">Parking Space</Label>
+          <Input
+            type="number"
+            name="parkingSpace"
+            id="parkingSpace"
+            value={property.parkingSpace}
+            onChange={handleChange}
+            disabled={property.propertyType !== 'house'} // Disable if propertyType is not 'house'
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label for="kitchen">Kitchen</Label>
+          <Input
+            type="number"
+            name="kitchen"
+            id="kitchen"
+            value={property.kitchen}
             onChange={handleChange}
             required
           />
         </FormGroup>
         <FormGroup>
-  <Label for="size">Size</Label>
-  <Input
-    type="number"
-    name="size"
-    id="size"
-    value={property.size}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
+          <Label for="bedroom">Bedroom</Label>
+          <Input
+            type="number"
+            name="bedroom"
+            id="bedroom"
+            value={property.bedroom}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="diningRoom">Dining Room</Label>
+          <Input
+            type="number"
+            name="diningRoom"
+            id="diningRoom"
+            value={property.diningRoom}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
+            </Col>
+            <Col md="6">
+
+
+
+        <FormGroup>
+          <Label for="hall">Hall</Label>
+          <Input
+            type="number"
+            name="hall"
+            id="hall"
+            value={property.hall}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label for="bathroom">Bathroom</Label>
+          <Input
+            type="number"
+            name="bathroom"
+            id="bathroom"
+            value={property.bathroom}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label for="noOfFloors">Number of Floors</Label>
+          <Input
+            type="number"
+            name="noOfFloors"
+            id="noOfFloors"
+            value={property.noOfFloors}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="builtYear">Built Year(in B.S)</Label>
+          <Input
+            type="number"
+            name="builtYear"
+            id="builtYear"
+            value={property.builtYear}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
+            </Col>
+          </Row>
+
+
+          </div>
+        )}
 
 <FormGroup>
-  <Label for="area">Area</Label>
-  <Input
-    type="number"
-    name="area"
-    id="area"
-    value={property.area}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
-
-<FormGroup>
-  <Label for="rooms">Rooms</Label>
-  <Input
-    type="number"
-    name="rooms"
-    id="rooms"
-    value={property.rooms}
-    onChange={handleChange}
-    disabled={property.propertyType !== 'house'} // Disable if propertyType is not 'house'
-
-  />
-</FormGroup>
-
-<FormGroup>
-  <Label for="parkingSpace">Parking Space</Label>
-  <Input
-    type="number"
-    name="parkingSpace"
-    id="parkingSpace"
-    value={property.parkingSpace}
-    onChange={handleChange}
-    disabled={property.propertyType !== 'house'} // Disable if propertyType is not 'house'
-  />
-</FormGroup>
-
-<FormGroup>
-  <Label for="kitchen">Kitchen</Label>
-  <Input
-    type="number"
-    name="kitchen"
-    id="kitchen"
-    value={property.kitchen}
-    onChange={handleChange}
-    disabled={property.propertyType !== 'house'} // Disable if propertyType is not 'house'
-
-  />
-</FormGroup>
-
-<FormGroup>
-  <Label for="bedroom">Bedroom</Label>
-  <Input
-    type="number"
-    name="bedroom"
-    id="bedroom"
-    value={property.bedroom}
-    onChange={handleChange}
-    disabled={property.propertyType !== 'house'} // Disable if propertyType is not 'house'
-
-  />
-</FormGroup>
-
-<FormGroup>
-  <Label for="diningRoom">Dining Room</Label>
-  <Input
-    type="number"
-    name="diningRoom"
-    id="diningRoom"
-    value={property.diningRoom}
-    onChange={handleChange}
-    disabled={property.propertyType !== 'house'} // Disable if propertyType is not 'house'
-
-  />
-</FormGroup>
-
-<FormGroup>
-  <Label for="hall">Hall</Label>
-  <Input
-    type="number"
-    name="hall"
-    id="hall"
-    value={property.hall}
-    onChange={handleChange}
-    disabled={property.propertyType !== 'house'} // Disable if propertyType is not 'house'
-
-  />
-</FormGroup>
-
-<FormGroup>
-  <Label for="bathroom">Bathroom</Label>
-  <Input
-    type="number"
-    name="bathroom"
-    id="bathroom"
-    value={property.bathroom}
-    onChange={handleChange}
-    disabled={property.propertyType !== 'house'} // Disable if propertyType is not 'house'
-
-  />
-</FormGroup>
-
-<FormGroup>
-  <Label for="noOfFloors">Number of Floors</Label>
-  <Input
-    type="number"
-    name="noOfFloors"
-    id="noOfFloors"
-    value={property.noOfFloors}
-    onChange={handleChange}
-    disabled={property.propertyType !== 'house'} // Disable if propertyType is not 'house'
-
-  />
-</FormGroup>
-
-<FormGroup>
-  <Label for="builtYear">Built Year</Label>
-  <Input
-    type="number"
-    name="builtYear"
-    id="builtYear"
-    value={property.builtYear}
-    onChange={handleChange}
-    required
-  />
-</FormGroup>
-
-<FormGroup>
-  <Label for="usedArea">Used Area</Label>
+<Label for="usedArea">Moda (in haat)</Label>
   <Input
     type="number"
     name="usedArea"
@@ -336,11 +426,25 @@ const OfferPropertyAddPage = () => {
             type="file"
             name="propertyImage"
             id="propertyImage"
+            multiple
             onChange={handleImageUpload}
             required
           />
         </FormGroup>
-        <Button color="primary" type="submit">Add Property</Button>
+        <div>
+          <h3>Selected Images:</h3>
+          {propertyImage.map((image, index) => (
+          <img key={index} src={URL.createObjectURL(image)} alt={`Image ${index + 1}`} />
+          ))}
+          </div>
+
+          <FormGroup>
+            <Label for="coordinates">Location</Label>
+            {/* Pass the handleCoordinatesChange function as the onCoordinatesChange prop */}
+            <Leaflet onCoordinatesChange={handleCoordinatesChange} />
+          </FormGroup>
+
+        <Button color="primary" type="submit">Offer Property</Button>
       </Form>
     </div>
     </div>

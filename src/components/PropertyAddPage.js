@@ -1,15 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Button, Row, Col  } from 'reactstrap';
 import {createProperty} from '../api';
 import { useNavigate } from 'react-router-dom';
-import NavBar from './NavBar';
 import Leaflet from './Leaflet';
-// import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
+const popularCities = {
+  Kathmandu: ['Kathmandu', 'Lalitpur', 'Bhaktapur', 'Kirtipur', 'Madhyapur Thimi'],
+  kaski: ['Pokhara', 'Lekhnath', 'Bharatpur', 'Tansen', 'Damauli'],
+  Chitwan: ['Bharatpur', 'Ratnanagar', 'Khairahani', 'Meghauli', 'Ichhyakamana'],
+  Lalitpur: ['Lalitpur', 'Godavari', 'Mahalaxmi', 'Konjyosom', 'Bagmati'],
+  Bhaktapur: ['Bhaktapur', 'Madhyapur Thimi', 'Nagarkot', 'Changunarayan', 'Suryabinayak'],
+  Palpa: ['Tansen', 'Rampur', 'Rambha', 'Ribdikot', 'Bagnaskali'],
+  Rupandehi: ['Butwal', 'Siddharthanagar', 'Lumbini', 'Devdaha', 'Tilottama'],
+  Kavrepalanchok: ['Banepa', 'Dhulikhel', 'Panauti', 'Panchkhal', 'Bhimeshwor']
+};
 
 const PropertyAddPage = () => {
 
-  const [propertyImage, setPropertyImage] = useState(null);
+  const [propertyImage, setPropertyImage] = useState([]);
   const navigate = useNavigate();
+  const [selectedPropertyType, setSelectedPropertyType] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+
+   // Use the selected district to get the cities for the dropdown
+   const cities = popularCities[selectedDistrict] || [];
+
 
   // New state to store coordinates
   const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
@@ -18,11 +35,11 @@ const PropertyAddPage = () => {
     propertyType: '',
     title: '',
     description: '',
-    price: 0,
+    price: '',
     district: '',
     city: '',
-    size: 0,
-    area: 0,
+    size: '',
+    area: '',
     rooms: 0,
     parkingSpace: 0,
     kitchen: 0,
@@ -31,15 +48,15 @@ const PropertyAddPage = () => {
     hall: 0,
     bathroom: 0,
     noOfFloors: 0,
-    builtYear: 0,
-    usedArea: 0,
+    builtYear: '',
+    usedArea: '',
     propertyImage: [],
   });
 
   // const navigate = useNavigate();
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
+    const userId = Cookies.get('userId');
     // Set the retrieved userId directly in the property object
     setProperty((prevState) => ({
       ...prevState,
@@ -53,24 +70,68 @@ const PropertyAddPage = () => {
   };
 
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    setPropertyImage(file);
-  };
+    const files = Array.from(e.target.files || []);
+    setPropertyImage((prevImage) => [...prevImage, ...files.slice(0, 10)]);
+    console.log("Selected Images:", files); // Check the selected images
 
-  const handleChange = (e) => {
+  };
+ 
+  const handlePropertyTypeChange = (e) => {
     const { name, value } = e.target;
+    setSelectedPropertyType(value);
     setProperty((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
+  const handleDistrictChange = (e) => {
+    const { value } = e.target;
+    setSelectedDistrict(value);
+    setProperty((prevState) => ({
+      ...prevState,
+      district: value,
+    }));
+    console.log(value);
+    setSelectedCity(''); // Reset the selected city when the district changes
+  };
+
+  const handleCityChange = (e) => {
+    const { value } = e.target;
+    setSelectedCity(value);
+    setProperty((prevState) => ({
+      ...prevState,
+      city: value,
+    }));
+    console.log(value);
+
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'price' && isNaN(value)) {
+      // Do not update the state if the input is not a valid number
+      return;
+    }
+
+    setProperty((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("testImage", propertyImage);
+      // formData.append("testImage", propertyImage);
+      // Loop through each image file and append it to formData
+    propertyImage.forEach((image, index) => {
+      formData.append('testImage', image);
+    });
       
+
       // Append other property data fields to the formData object
       Object.keys(property).forEach((key) => {
         formData.append(key, property[key]);
@@ -80,15 +141,18 @@ const PropertyAddPage = () => {
       formData.append('latitude', coordinates.latitude);
       formData.append('longitude', coordinates.longitude);
 
+      console.log("FormData:", formData); // Check the formData with images
+
       const response = await createProperty(formData);
 
       console.log(response.data); // Handle the response as needed
-      navigate('/loginhomepage');
+      navigate('/');
     } catch (error) {
       console.log(error);
     }
   };
   
+ 
 
     // TODO: Add property to the database
 
@@ -105,6 +169,7 @@ const PropertyAddPage = () => {
             name="propertyType"
             id="propertyType"
             value={property.propertyType}
+            onClick={handlePropertyTypeChange}
             onChange={handleChange}
             required
           >
@@ -149,27 +214,43 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="district">district</Label>
           <Input
-            type="text"
+            type="select"
             name="district"
             id="district"
-            value={property.district}
-            onChange={handleChange}
+            value={selectedDistrict}
+            onChange={handleDistrictChange}
             required
-          />
+            >
+            <option value=''>Select District</option>
+            {Object.keys(popularCities).map((district) => (
+              <option key={district} value={district}>
+                {district}
+              </option>
+            ))}
+          </Input>
         </FormGroup>
+
         <FormGroup>
           <Label for="city">city</Label>
           <Input
-            type="text"
+            type="select"
             name="city"
             id="city"
-            value={property.city}
-            onChange={handleChange}
+            value={selectedCity}
+            onChange={handleCityChange}
             required
-          />
+            >
+            <option value=''>Select City</option>
+            {cities.map((city) => (
+              <option key={city} value={city}>
+                {city}
+              </option>
+            ))}
+          </Input>
         </FormGroup>
+
         <FormGroup>
-          <Label for="size">Size</Label>
+          <Label for="size">Size (in Anna)</Label>
           <Input
             type="number"
             name="size"
@@ -191,6 +272,13 @@ const PropertyAddPage = () => {
             required
           />
         </FormGroup>
+
+        {selectedPropertyType === 'house' && (
+        
+        <div className='property-add-details-container'> 
+          <h4 className='property-details-h4'>Property details</h4>
+          <Row>
+            <Col md="6">
 
         <FormGroup>
           <Label for="rooms">Rooms</Label>
@@ -251,6 +339,8 @@ const PropertyAddPage = () => {
             required
           />
         </FormGroup>
+        </Col>
+            <Col md="6">
 
         <FormGroup>
           <Label for="hall">Hall</Label>
@@ -299,9 +389,15 @@ const PropertyAddPage = () => {
             required
           />
         </FormGroup>
+        </Col>
+          </Row>
+
+
+          </div>
+        )}
 
         <FormGroup>
-          <Label for="usedArea">Used Area</Label>
+          <Label for="usedArea">Moda (in haat)</Label>
           <Input
             type="number"
             name="usedArea"
@@ -319,17 +415,23 @@ const PropertyAddPage = () => {
             type="file"
             name="propertyImage"
             id="propertyImage"
+            multiple
             onChange={handleImageUpload}
             required
           />
         </FormGroup>
+        <div>
+          <h3>Selected Images:</h3>
+          {propertyImage.map((image, index) => (
+          <img key={index} src={URL.createObjectURL(image)} alt={`Image ${index + 1}`} />
+          ))}
+          </div>
+
         <FormGroup>
       <Label for="coordinates">Location</Label>
       {/* Pass the handleCoordinatesChange function as the onCoordinatesChange prop */}
       <Leaflet onCoordinatesChange={handleCoordinatesChange} />
     </FormGroup>
-
-        
         <Button color="primary" type="submit">Add Property</Button>
       </Form>
     </div>

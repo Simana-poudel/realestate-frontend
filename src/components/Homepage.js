@@ -6,7 +6,7 @@ import PropertyCard from './PropertyCard';
 import { Col, Row } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 
 
 const HomePage = () => {
@@ -61,7 +61,7 @@ const HomePage = () => {
   const handleHouseClick = () => {
     console.log(' houseclicked:');
 
-    navigate(`/searchproperty/:propertyType`);
+    navigate(`/searchproperty/house`);
   };
 
 
@@ -156,9 +156,11 @@ const HomePage = () => {
             />
           ))}
         </div>
+        <Link to='/searchproperty'>
           <div className='view-more-container'>
           <button className='view-more button'>View more</button>
           </div>
+        </Link>
         </div>
       </div>
     </div>

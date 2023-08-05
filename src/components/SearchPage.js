@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getProperties } from '../api';
-import NavBar from './NavBar';
-import Footer from './footer';
 import PropertyCard from './PropertyCard';
-
+import { Box, CircularProgress } from '@mui/material';
 
 const SearchPage = () => {
   const { district, propertyType } = useParams();
@@ -13,7 +11,8 @@ const SearchPage = () => {
   const [selectedDistrict, setSelectedDistrict] = useState(district || '');
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedPropertyType, setSelectedPropertyType] = useState(propertyType || '');
-
+  const [loading, setLoading] = useState(false);
+  const [searchClicked, setSearchClicked] = useState(false);
 
   const popularCities = {
     Kathmandu: ['Kathmandu', 'Lalitpur', 'Bhaktapur', 'Kirtipur', 'Madhyapur Thimi'],
@@ -30,7 +29,31 @@ const SearchPage = () => {
   useEffect(() => {
     async function getPropertyData() {
 
-      if (selectedPropertyType ) {
+      if(selectedDistrict && selectedPropertyType) {
+
+        try {
+          // Call the API with the selected filters
+          const response = await getProperties({
+            district: selectedDistrict,
+            propertyType: selectedPropertyType
+
+          });
+
+          // Filter the properties based on the selected district
+          const filteredProperties = response.data.filter(
+            (property) => 
+            property.district === selectedDistrict && property.propertyType === 
+            selectedPropertyType);
+
+          // Update the state with the filtered properties
+          setData(filteredProperties);
+        } catch (error) {
+          console.error('Error fetching properties:', error);
+        }
+
+      }
+
+      else if(selectedPropertyType) {
         try {
           // Call the API with the selected filters
           const response = await getProperties({
@@ -38,7 +61,10 @@ const SearchPage = () => {
           });
 
           // Filter the properties based on the selected district
-          const filteredProperties = response.data.filter((property) => property.propertyType === selectedPropertyType);
+          const filteredProperties = response.data.filter(
+            (property) => 
+            property.propertyType === selectedPropertyType
+            );
 
           // Update the state with the filtered properties
           setData(filteredProperties);
@@ -59,7 +85,12 @@ const SearchPage = () => {
           });
 
           // Filter the properties based on the selected district
-          const filteredProperties = response.data.filter((property) => property.district === selectedDistrict);
+          const filteredProperties = response.data.filter(
+            (property) => 
+            property.district === selectedDistrict &&
+            property.city === selectedCity &&
+            property.propertyType === selectedPropertyType
+            );
 
           // Update the state with the filtered properties
           setData(filteredProperties);
@@ -107,7 +138,10 @@ const SearchPage = () => {
     // You can implement your search logic here
     console.log('Perform search:', selectedDistrict, selectedCity, selectedPropertyType);
 
-    // Call the API with the selected filters
+    if(!selectedCity) return;
+    setLoading(true);
+
+
     try {
       // Call the API with the selected filters
       const response = await getProperties({
@@ -115,14 +149,23 @@ const SearchPage = () => {
         city: selectedCity,
         propertyType: selectedPropertyType
       });
-  
+
       // Filter the properties based on the selected district
-      const filteredProperties = response.data.filter((property) => property.district === selectedDistrict);
+      const filteredProperties = response.data.filter(
+        (property) =>
+        property.district === selectedDistrict &&
+        property.city === selectedCity &&
+        property.propertyType === selectedPropertyType
+        );
   
-      // Update the state with the filtered properties
-      setData(filteredProperties);
+      // Wait for 1 second before updating the state with the filtered properties
+      setTimeout(() => {
+        setData(filteredProperties);
+        setLoading(false); // Hide loading icon after 1 second
+      }, 500);
     } catch (error) {
       console.error('Error fetching properties:', error);
+      setLoading(false); // Hide loading icon on error
     }
   };
 
@@ -166,6 +209,15 @@ const SearchPage = () => {
           <button className="search-button" onClick={handleSearch}>
             Search</button>
         </div>
+        {
+
+        }
+        {loading ? (
+          // Show circular progress while loading
+          <Box display="flex" justifyContent="center" alignItems="center" height="200px">
+            <CircularProgress />
+          </Box>
+        ) : (
         <div className="property-card-container">
           {data.map((property, index) => (
             <PropertyCard
@@ -174,8 +226,8 @@ const SearchPage = () => {
             />
           ))}
         </div>
+        )}
       </div>
-      <Footer />
     </div>
   );
 };

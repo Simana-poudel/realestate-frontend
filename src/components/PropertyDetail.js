@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams,useOutletContext } from 'react-router-dom';
 import { getPropertyDetail, fixMeetingWithSeller } from '../api';
 import { Col, Container, Modal, Row } from 'reactstrap';
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
@@ -10,6 +10,7 @@ import BriefCharacter from './BriefCharacter';
 import LeafletLocation from './LeafletLocation';
 import MessageOutlined from '@mui/icons-material/MessageOutlined';
 import { v4 as uuidv4 } from 'uuid';
+import Cookies from 'js-cookie';
 
 const PropertyDetailPage = () => {
   const { propertyId } = useParams();
@@ -20,9 +21,15 @@ const PropertyDetailPage = () => {
   const navigate = useNavigate();
   const roomId = uuidv4();
   const Ownername = data?.user?.name;
+  const { socket, userId } = useOutletContext();
+  const username = localStorage.getItem("username")
+
+
 
 
   useEffect(() => {
+    window.scrollTo(0, 0)
+
     async function fetchPropertyDetail() {
       try {
         const propertyData = await getPropertyDetail(propertyId);
@@ -38,8 +45,6 @@ const PropertyDetailPage = () => {
       }
     }
 
-  
-
     fetchPropertyDetail();
   }, [propertyId]);
 
@@ -49,7 +54,7 @@ const PropertyDetailPage = () => {
 
   const handleViewDocument = () => {
     console.log("button is clicked");
-    const userId = localStorage.getItem('userId');
+    const userId = Cookies.get('userId');
 
     if (userId) {
       setShowViewDocumentModal(true);
@@ -73,7 +78,7 @@ console.log();
   };
 
   const handleOfferProperty = () => {
-    const userId = localStorage.getItem('userId');
+    const userId = Cookies.get('userId');
     localStorage.setItem('redirectPath', window.location.pathname);
 
     if (userId) {
@@ -101,7 +106,7 @@ console.log();
   };
 
   const handlefixMeeting = async () => {
-    const userId = localStorage.getItem('userId');
+    const userId = Cookies.get('userId');
     localStorage.setItem('redirectPath', window.location.pathname);
 
     if (userId) {
@@ -130,7 +135,20 @@ console.log();
   //creating new room
   function createNewRoom () {
     console.log(Ownername);
-    navigate(`/room/${roomId}/${Ownername}`);
+    // navigate(`/room/${roomId}/${Ownername}`);
+    const userId = Cookies.get('userId');
+
+    if (userId) {
+      navigate(`/room/${roomId}/${Ownername}`);
+      socket.emit('new-room-created', { roomId, userId, Ownername ,username });
+
+    } else {
+        // Save the current path in localStorage
+        localStorage.setItem('redirectPath', window.location.pathname);
+
+        // Show a message and provide a button to redirect to login page
+        setShowLoginModal(true);
+      }
 
   }
 
@@ -180,8 +198,51 @@ console.log();
           <button onClick={handlefixMeeting} className='button meeting-button'>Fix a Meeting</button>
           </div>
           <div className='description'>
-            {data?.description} Eiusmod fugiat officia occaecat sint ullamco veniam voluptate sunt. Dolore incididunt nulla aliquip tempor dolor laboris dolore duis consequat sit sint ut ipsum. Adipisicing ad voluptate consequat ipsum magna in laborum deserunt.
+            {data?.description} 
           </div>
+          <div className='property-address'>
+          <h1 className='descriptionTitle'>Property Details</h1> 
+              <div className='description'>
+                <Row>
+                  <Col md='6'>
+                <div><span className='dataTitle'>No of Rooms:</span> <span className='data'>{data?.district}</span></div>
+                <div><span className='dataTitle'>No of Floors:</span> <span className='data'>{data?.noOfFloors}</span></div>
+                <div><span className='dataTitle'>Parking Space:</span> <span className='data'>{data?.parkingSpace}</span></div>
+                <div><span className='dataTitle'>Dining Rooms:</span> <span className='data'>{data?.diningRoom}</span></div>
+
+                  </Col>
+                  <Col md='6'>
+                <div><span className='dataTitle'>Kitchen:</span> <span className='data'>{data?.kitchen}</span></div>
+                <div><span className='dataTitle'>Bedroom:</span> <span className='data'>{data?.bedroom}</span></div>
+                <div><span className='dataTitle'>Hall:</span> <span className='data'>{data?.hall}</span></div>
+                <div><span className='dataTitle'>Bathroom:</span> <span className='data'>{data?.bathroom}</span></div>
+
+                  </Col>
+                </Row>
+                </div>
+          </div>
+
+
+          <div className='property-address'>
+          <h1 className='descriptionTitle'>Property Address</h1> 
+              <div className='description'>
+                <Row>
+                  <Col md='6'>
+                <div><span className='dataTitle'>District:</span> <span className='data'>{data?.district}</span></div>
+                {data.coordinates && data.coordinates.length > 0 && (
+                <div><span className='dataTitle'>Latitude:</span> <span className='data'>{data?.coordinates[0]}</span></div>
+                )}
+                  </Col>
+                  <Col md='6'>
+                <div><span className='dataTitle'>City:</span> <span className='data'>{data?.city}</span></div>
+                {data.coordinates && data.coordinates.length > 0 && (
+                <div><span className='dataTitle'>Longitude:</span> <span className='data'>{data?.coordinates[1]}</span></div>
+                )}
+                  </Col>
+                </Row>
+                </div>
+          </div>
+
           <div className='location'>Location
           <div>
           <LeafletLocation coordinates={data?.coordinates} />
@@ -192,7 +253,7 @@ console.log();
             <Modal isOpen={showLoginModal} onClose={handleLoginModalClose}>
             <h2>Login Required</h2>
             <p>You need to login first.</p>
-            <button onClick={handleLoginModalConfirm}>Go to Login</button>
+            <button className='button' onClick={handleLoginModalConfirm}>Go to Login</button>
             <button onClick={handleLoginModalClose}>Close</button>
             </Modal>
           )}
@@ -209,8 +270,15 @@ console.log();
                   <p>Email: {data?.user?.email}</p>
                   <p>Contact: {data?.user?.contact}</p>
                   <p>Name: {data?.user?.name}</p>
+            </div>
+            <div className='user-info-container'>
+              <p className='user-info'>Chat with {data?.user?.name} Now </p>
+                <p>
+                  Click here to start a conversation:
                   <MessageOutlined  onClick={createNewRoom}/>
-                </div>
+                </p>
+            </div>
+            
       </Col>
       </Row>
     </Container>

@@ -24,7 +24,7 @@ const LoginPage = () => {
       console.log({reponse: response});
       
       if (response.userId) {
-      localStorage.setItem('userId', response.userId);
+      Cookies.set('userId', response.userId);
       localStorage.setItem('username', response.username);
       Cookies.set('access_token', response.token);
       

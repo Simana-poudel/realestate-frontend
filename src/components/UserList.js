@@ -8,11 +8,12 @@ import { getrooms } from '../api';
 
 function UserList() {
   const navigate = useNavigate();
-  const { socket } = useOutletContext();
+  const { socket, userId } = useOutletContext();
   const { roomId } = useParams();
   const [rooms, setRooms] = useState([]);
 
 
+console.log(userId);
   useEffect(() => {
     async function getRoomsData() {
       const room = await getrooms();
@@ -39,8 +40,8 @@ function UserList() {
   function createNewRoom() {
     const roomId = uuidv4();
     navigate(`/room/${roomId}`);
-    socket.emit('new-room-created', { roomId });
-    setRooms([...rooms, roomId]);
+    socket.emit('new-room-created', { roomId, userId });
+    // setRooms([...rooms, {roomId, name: "Test", _id: "testId"}]);
 
   }
 
@@ -48,9 +49,20 @@ function UserList() {
   useEffect(() => {
     if (!socket) return;
 
-    socket.on('new-room-created', ({ roomId }) => {
-      setRooms([...rooms, roomId]);
+    socket.on('new-room-created', ({room}) => {
+      setRooms((prevRooms) => [...prevRooms, room]);
     });
+    socket.on('room-removed', ({ roomId }) => {
+      setRooms(rooms.filter((room) => room.roomId !== roomId ));
+    });
+
+
+    return () => {
+      // Clean up the socket listeners when the component unmounts
+      socket.off('new-room-created');
+      socket.off('room-removed');
+    };
+  
   }, [socket]);
 
 
@@ -70,10 +82,12 @@ function UserList() {
            }
             
             <List sx={{backgroundColor:"background.paper"}} component="nav" aria-label="mailbox folders">
-
+           {
+            userId && 
             <ListItem button divider onClick={createNewRoom} >
               <ListItemText primary="New chat" />
             </ListItem>
+           }
 
           </List>
         </Col>

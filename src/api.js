@@ -188,16 +188,61 @@ export const getrooms = async () => {
 };
 
 
-
-export const getCompletedTodo = async (id) => {
+// GET request example
+export const findChat = async (firstId, secondId) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/api/todo/completed`);
+    const response = await axiosInstance.get(`${baseURL}/api/chats/${firstId}/${secondId}`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+
+export const createChat = async (data) => {
+  try {
+    const response = await axiosInstance.post(`${baseURL}/api/chats/`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const findUserChats = async (userId) => {
+  try {
+    const response = await axiosInstance.get(`${baseURL}/api/chats/${userId}`);
     return response.data.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
+
+export const getMessage = async (chatId) => {
+  try {
+    const response = await axiosInstance.get(`${baseURL}/api/chats/${chatId}`);
+    return response.data.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+
+export const createMessage = async (data) => {
+  try {
+    const response = await axiosInstance.post(`${baseURL}/api/message/`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+
 
 // PUT request example
 export const updateTodo = async (id, data) => {
@@ -210,15 +255,6 @@ export const updateTodo = async (id, data) => {
   }
 };
 
-// DELETE request example
-export const deleteTodo = async (id) => {
-  try {
-    const response = await axiosInstance.delete(`${baseURL}/api/todo/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+
 
 export default axiosInstance;

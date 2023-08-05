@@ -94,8 +94,16 @@
   
   } 
   
-.Navitems{
+.Navitems .nav-sell{
   cursor: pointer;
 
 }
 
+.modal-login-container{
+  background-color: #030303;
+  color: #030303;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+
+}
