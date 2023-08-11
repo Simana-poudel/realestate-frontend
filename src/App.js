@@ -9,22 +9,23 @@ import './css/register.css';
 import './css/propertydetail.css';
 import './css/navbar.css';
 import './css/message.css';
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 import { Container } from '@mui/material';
 import Footer from './components/footer';
 import { Outlet } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import NavBar from './components/NavBar';
+import NavBarr from './components/NavBarr';
+import ChatProvider from './Context/ChatProvider';
 
 function App() {
-  const [socket, setSocket] = useState(null);
+  // const [socket, setSocket] = useState(null);
   const [ userId, setUserId] = useState(null);
   const [ username, setUsername] = useState(null);
 
 
 
   useEffect(() => {
-    setSocket(io('http://localhost:5000'));
+    // setSocket(io('http://localhost:5000'));
     const _userId = Cookies.get("userId");
     const username = localStorage.getItem("username");
 
@@ -35,11 +36,13 @@ function App() {
 }, []);
 
 return (
+<ChatProvider>
   <div>
-    <NavBar />
-    <Outlet context={{socket, userId, username}}/>
+    <NavBarr />
+    <Outlet context={{ userId, username}}/>
     <Footer />
   </div>
+</ChatProvider>
   );
 }
 

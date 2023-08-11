@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Cookies from 'js-cookie';
 
 
-const NavBar = () => {
+const NavBarr = () => {
     const navigate = useNavigate();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
@@ -66,6 +66,7 @@ const NavBar = () => {
       navigate('/chats');
     };
 
+
     const userId = Cookies.get('userId'); // Get the user ID from local storage
     const username = localStorage.getItem('username');
     // const handleRegister = () => {
@@ -118,4 +119,4 @@ const NavBar = () => {
     );
   };
 
-  export default NavBar;
+  export default NavBarr;

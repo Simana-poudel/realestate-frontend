@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getOfferedProperty, fixMeetingWithSeller } from '../api';
-import NavBar from './NavBar';
+import NavBar from './NavBarr';
 import { Modal } from 'reactstrap';
 
 const OfferPropertyDetailPage = () => {

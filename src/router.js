@@ -11,6 +11,8 @@ import PropertyDetailPage from "./components/PropertyDetail";
 import SearchPage from "./components/SearchPage";
 import UserList from "./components/UserList";
 import AboutUs from "./components/AboutUs";
+import Chat from "./components/Chat";
+import MessagePage from "./components/MessagePage";
 
 const router = createBrowserRouter([
     {
@@ -63,16 +65,20 @@ const router = createBrowserRouter([
             },
             {
                 path:"/chats",
-                element: <UserList />
+                element: <MessagePage />
             },
-            {
-                path:"/room/:roomId/:ownername",
-                element: <UserList />
-            },
-            {
-                path:"/room/:roomId",
-                element: <UserList />
-            },
+            // {
+            //     path:"/chat",
+            //     element: <Chat />
+            // },
+            // {
+            //     path:"/room/:roomId/:ownername",
+            //     element: <UserList />
+            // },
+            // {
+            //     path:"/room/:roomId",
+            //     element: <UserList />
+            // },
             {
                 path:"/aboutus",
                 element: <AboutUs />

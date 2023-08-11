@@ -23,6 +23,7 @@ const PropertyDetailPage = () => {
   const Ownername = data?.user?.name;
   const { socket, userId } = useOutletContext();
   const username = localStorage.getItem("username")
+  const [showFixMeetingConfirmationModal, setShowFixMeetingConfirmationModal] = useState(false);
 
 
 
@@ -33,11 +34,10 @@ const PropertyDetailPage = () => {
     async function fetchPropertyDetail() {
       try {
         const propertyData = await getPropertyDetail(propertyId);
-        console.log(propertyData);
         setData(propertyData.data);
-        localStorage.setItem('user-email', data.user.email);
-        localStorage.setItem('url', window.location.href);
-
+        console.log(propertyData);
+        console.log(data?.user?.email);
+        
         console.log(data)
 
       } catch (error) {
@@ -105,9 +105,10 @@ console.log();
     navigate('/login');
   };
 
-  const handlefixMeeting = async () => {
+  const handleFixMeeting = async () => {
     const userId = Cookies.get('userId');
     localStorage.setItem('redirectPath', window.location.pathname);
+    localStorage.setItem('user-email', data?.user?.email);
 
     if (userId) {
       localStorage.setItem('propertyId', data._id);
@@ -116,11 +117,15 @@ console.log();
       const dataForMeeting = {
         email: localStorage.getItem('user-email'),
         url: window.location.href,
+        contact: localStorage.getItem('user-contact'),
+        name: localStorage.getItem('username')
       };
 
       // Call the fixMeetingWithSeller function with the data
       try {
         await fixMeetingWithSeller(dataForMeeting);
+        setShowFixMeetingConfirmationModal(false);
+
         // Optionally, you can show a success message to the user
       } catch (error) {
         console.error(error);
@@ -132,25 +137,33 @@ console.log();
     }
   };
 
-  //creating new room
-  function createNewRoom () {
-    console.log(Ownername);
-    // navigate(`/room/${roomId}/${Ownername}`);
-    const userId = Cookies.get('userId');
+  // //creating new room
+  // function createNewRoom () {
+  //   console.log(Ownername);
+  //   // navigate(`/room/${roomId}/${Ownername}`);
+  //   const userId = Cookies.get('userId');
 
-    if (userId) {
-      navigate(`/room/${roomId}/${Ownername}`);
-      socket.emit('new-room-created', { roomId, userId, Ownername ,username });
+  //   if (userId) {
+  //     navigate(`/room/${roomId}/${Ownername}`);
+  //     socket.emit('new-room-created', { roomId, userId, Ownername ,username });
 
-    } else {
-        // Save the current path in localStorage
-        localStorage.setItem('redirectPath', window.location.pathname);
+  //   } else {
+  //       // Save the current path in localStorage
+  //       localStorage.setItem('redirectPath', window.location.pathname);
 
-        // Show a message and provide a button to redirect to login page
-        setShowLoginModal(true);
-      }
+  //       // Show a message and provide a button to redirect to login page
+  //       setShowLoginModal(true);
+  //     }
 
-  }
+  // }
+
+  const handleShowFixMeetingConfirmationModal = () => {
+    setShowFixMeetingConfirmationModal(true);
+  };
+
+  const handleCloseFixMeetingConfirmationModal = () => {
+    setShowFixMeetingConfirmationModal(false);
+  };
 
   
   return (
@@ -195,7 +208,7 @@ console.log();
           </div>
           <div className='button-wrapper'>   
           <button onClick={handleOfferProperty} className='button offer-button'>Make an Offer</button>
-          <button onClick={handlefixMeeting} className='button meeting-button'>Fix a Meeting</button>
+          <button onClick={handleShowFixMeetingConfirmationModal} className='button meeting-button'>Fix a Meeting</button>
           </div>
           <div className='description'>
             {data?.description} 
@@ -275,7 +288,7 @@ console.log();
               <p className='user-info'>Chat with {data?.user?.name} Now </p>
                 <p>
                   Click here to start a conversation:
-                  <MessageOutlined  onClick={createNewRoom}/>
+                  <MessageOutlined />
                 </p>
             </div>
             
@@ -298,6 +311,15 @@ console.log();
             </div>
             </div>
           )}
+
+          {/* Fix Meeting Confirmation Modal */}
+      {showFixMeetingConfirmationModal && (
+        <Modal isOpen={showFixMeetingConfirmationModal} onClose={handleCloseFixMeetingConfirmationModal}>
+          <h2>Do you want to send a message to the seller?</h2>
+          <button className='button' onClick={handleFixMeeting}>Yes</button>
+          <button onClick={handleCloseFixMeetingConfirmationModal}>Cancel</button>
+        </Modal>
+      )}
   </div>
   );
 };

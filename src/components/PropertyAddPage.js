@@ -109,17 +109,19 @@ const PropertyAddPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'price' && isNaN(value)) {
-      // Do not update the state if the input is not a valid number
-      return;
-    }
-
+    // Ensure the value is a valid number before updating the state
+  if (name === 'price' || name === 'rooms' || name === 'parkingSpace' || name === 'kitchen' || name === 'bedroom' || name === 'diningRoom' || name === 'hall' || name === 'bathroom' || name === 'noOfFloors' || name === 'builtYear' || name === 'size' || name === 'area' || name === 'usedArea') {
+      setProperty((prevState) => ({
+        ...prevState,
+        [name]: Number(value),
+      }));
+  } else {
     setProperty((prevState) => ({
       ...prevState,
       [name]: value,
     }));
-
-  };
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -146,7 +148,8 @@ const PropertyAddPage = () => {
       const response = await createProperty(formData);
 
       console.log(response.data); // Handle the response as needed
-      navigate('/');
+      const propertyId = response.data._id;
+      navigate(`/property/${propertyId}`);
     } catch (error) {
       console.log(error);
     }
@@ -203,7 +206,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="price">price</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="price"
             id="price"
             value={property.price}
@@ -252,7 +256,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="size">Size (in Anna)</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="size"
             id="size"
             value={property.size}
@@ -264,7 +269,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="area">Area</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="area"
             id="area"
             value={property.area}
@@ -283,7 +289,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="rooms">Rooms</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="rooms"
             id="rooms"
             value={property.rooms}
@@ -295,7 +302,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="parkingSpace">Parking Space</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="parkingSpace"
             id="parkingSpace"
             value={property.parkingSpace}
@@ -307,7 +315,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="kitchen">Kitchen</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="kitchen"
             id="kitchen"
             value={property.kitchen}
@@ -319,7 +328,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="bedroom">Bedroom</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="bedroom"
             id="bedroom"
             value={property.bedroom}
@@ -331,7 +341,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="diningRoom">Dining Room</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="diningRoom"
             id="diningRoom"
             value={property.diningRoom}
@@ -345,7 +356,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="hall">Hall</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="hall"
             id="hall"
             value={property.hall}
@@ -357,7 +369,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="bathroom">Bathroom</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="bathroom"
             id="bathroom"
             value={property.bathroom}
@@ -369,7 +382,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="noOfFloors">Number of Floors</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="noOfFloors"
             id="noOfFloors"
             value={property.noOfFloors}
@@ -381,7 +395,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="builtYear">Built Year</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="builtYear"
             id="builtYear"
             value={property.builtYear}
@@ -399,7 +414,8 @@ const PropertyAddPage = () => {
         <FormGroup>
           <Label for="usedArea">Moda (in haat)</Label>
           <Input
-            type="number"
+            type="text"
+            inputmode="numeric"
             name="usedArea"
             id="usedArea"
             value={property.usedArea}

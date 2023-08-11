@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getProperties } from '../api';
-import NavBar from './NavBar';
+import NavBar from './NavBarr';
 import Footer from './footer';
 import PropertyCard from './PropertyCard';
 import { Col, Row } from 'reactstrap';

@@ -3,9 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { createlogin } from '../api';
 import Cookies from 'js-cookie';
+import { ChatState } from '../Context/ChatProvider';
 
 const LoginPage = () => {
 
+  const { setUser } = ChatState();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -24,9 +26,21 @@ const LoginPage = () => {
       console.log({reponse: response});
       
       if (response.userId) {
+
+        const userObj = {
+          userId: response.userId,
+          username: response.username,
+          email: response.email, // Assuming email is part of the response
+          contact: response.contact,
+        };
+      setUser(userObj);
+
+      localStorage.setItem('user', JSON.stringify(userObj));
+
       Cookies.set('userId', response.userId);
       localStorage.setItem('username', response.username);
       Cookies.set('access_token', response.token);
+      localStorage.setItem('user-contact', response.contact);
       
       
       // Retrieve the saved path from localStorage

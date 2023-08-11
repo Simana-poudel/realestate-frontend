@@ -40,6 +40,13 @@ textarea {
     background: #FBFBFB;
 }
 
+.messages{
+    display:flex;
+    flex-direction: column;
+    overflow: scroll;
+    scrollbar-width: none;
+}
+
 .message {
     padding: 20px; 
     border-radius: 4px; 
@@ -63,3 +70,4 @@ textarea {
     color: #333;
     font-size: 14px;
 }
+

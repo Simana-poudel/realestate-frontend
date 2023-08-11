@@ -4,7 +4,7 @@ import { Box, Button, Card,IconButton, InputAdornment, InputLabel,OutlinedInput,
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
-function Message() {
+function UserMessage() {
   const { socket } = useOutletContext();
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
@@ -33,7 +33,6 @@ function Message() {
 
   }
 
-
   useEffect(() => {
     if(!socket) return;
 
@@ -55,11 +54,6 @@ function Message() {
 
     socket.on("typing-stopped-from-server", () => {
       setTyping(false);
-    });
-
-    socket.on("room-removed", ({ roomId }) => {
-      // Handle room removal
-      console.log("room deleted");
     });
 
   }, [socket]);
@@ -108,7 +102,9 @@ function Message() {
             }
             {
               roomId && 
+              <Link to={'/chats'}>
               <Button onClick={handleDeleteRoom} sx={{color:"white"}} variant='text'>Delete Room</Button>
+              </Link>
             }
             </Box>
 
@@ -121,7 +117,7 @@ function Message() {
             {chat.map((data, index) => 
               data.type === 'image' ? (
 
-                <img className='message-image' style={{float: data.received ? "left" :"right"}}
+                <img style={{float: data.received ? "left" :"right"}}
                 key={index} src={data.message}
                 alt='my-image' 
                 width="200" />
@@ -174,4 +170,4 @@ function Message() {
   );
 }
 
-export default Message;
+export default UserMessage;

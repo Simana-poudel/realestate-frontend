@@ -65,6 +65,18 @@ export const createlogin = async (data) => {
     }
   };
 
+  // GET request example
+  export const getUsers = async (query) => {
+    try {
+      const response = await axiosInstance.get(`${baseURL}/api/user`,  { params: query });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
   export const createProperty = async (data) => {
     try {
       const response = await axiosInstance.post(`${baseURL}/api/property`, data);
@@ -74,6 +86,8 @@ export const createlogin = async (data) => {
       throw error;
     }
   };
+  
+
 
 // GET request example
 export const getProperties = async (query) => {
@@ -176,22 +190,9 @@ export const fixMeetingWithSeller = async (data) => {
 };
 
 // GET request example
-export const getrooms = async () => {
+export const fetchChats = async () => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/api/room`);
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
-
-// GET request example
-export const findChat = async (firstId, secondId) => {
-  try {
-    const response = await axiosInstance.get(`${baseURL}/api/chats/${firstId}/${secondId}`);
+    const response = await axiosInstance.get(`${baseURL}/api/chats`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -223,8 +224,9 @@ export const findUserChats = async (userId) => {
 
 export const getMessage = async (chatId) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/api/chats/${chatId}`);
-    return response.data.data;
+    const response = await axiosInstance.get(`${baseURL}/api/message/${chatId}`);
+    console.log(response);
+    return response.data;
   } catch (error) {
     console.error(error);
     throw error;
@@ -232,7 +234,7 @@ export const getMessage = async (chatId) => {
 };
 
 
-export const createMessage = async (data) => {
+export const sendMessageToServer = async (data) => {
   try {
     const response = await axiosInstance.post(`${baseURL}/api/message/`, data);
     return response.data;
@@ -255,6 +257,17 @@ export const updateTodo = async (id, data) => {
   }
 };
 
+// GET request example
+export const findChat = async (firstId, secondId) => {
+  try {
+    const response = await axiosInstance.get(`${baseURL}/api/chats/${firstId}/${secondId}`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
 
 export default axiosInstance;
