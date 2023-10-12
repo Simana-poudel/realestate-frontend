@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams,useOutletContext } from 'react-router-dom';
-import { getPropertyDetail, fixMeetingWithSeller } from '../api';
+import { useNavigate, useParams,useOutletContext, Link } from 'react-router-dom';
+import { getPropertyDetail, fixMeetingWithSeller, addPropertyDocument, getPropertyDocument } from '../api';
 import { Col, Container, Modal, Row } from 'reactstrap';
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,19 +11,30 @@ import LeafletLocation from './LeafletLocation';
 import MessageOutlined from '@mui/icons-material/MessageOutlined';
 import { v4 as uuidv4 } from 'uuid';
 import Cookies from 'js-cookie';
+import { ChatState } from '../Context/ChatProvider';
 
 const PropertyDetailPage = () => {
   const { propertyId } = useParams();
   const [data, setData] = useState([]);
+  const [documentData, setDocumentData] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showViewDocumentModal, setShowViewDocumentModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [owner, setOwner] = useState('');
+  const [showAddDocumentModal, setShowAddDocumentModal] = useState(false);
+  const [documentImage, setDocumentImage] = useState([]);
+  const [naksaImage, setNaksaImage] = useState(null);
+  const [lalpurjaImage, setLalpurjaImage] = useState(null);
+  const [documentId, setDocumentId] = useState('');
+
   const navigate = useNavigate();
   const roomId = uuidv4();
-  const Ownername = data?.user?.name;
-  const { socket, userId } = useOutletContext();
+  const { socket } = useOutletContext();
   const username = localStorage.getItem("username")
   const [showFixMeetingConfirmationModal, setShowFixMeetingConfirmationModal] = useState(false);
+
+  const { user } = ChatState();
+  const userId = user?.userId;
 
 
 
@@ -35,7 +46,9 @@ const PropertyDetailPage = () => {
       try {
         const propertyData = await getPropertyDetail(propertyId);
         setData(propertyData.data);
-        console.log(propertyData);
+        setOwner(propertyData.data?.user?._id);
+        setDocumentId(propertyData.data?._id);
+        console.log(propertyData.data);
         console.log(data?.user?.email);
         
         console.log(data)
@@ -44,9 +57,33 @@ const PropertyDetailPage = () => {
         console.error(error);
       }
     }
+    
 
     fetchPropertyDetail();
   }, [propertyId]);
+
+
+
+  useEffect(() => {
+    async function fetchPropertyDocument() {
+      try {
+        const response = await getPropertyDocument(documentId);
+        setDocumentData(response?.data[0]);
+        console.log('document data',response?.data[0]);
+        setNaksaImage(response?.data[0]?.naksa[0]?.name);
+        setLalpurjaImage(response?.data[0]?.lalpurja[0]?.name);
+
+
+        
+
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+     fetchPropertyDocument();
+  }, [documentId]);
+
 
   if (!data) {
     return <div>Loading...</div>;
@@ -65,6 +102,14 @@ const PropertyDetailPage = () => {
         // Show a message and provide a button to redirect to login page
         setShowLoginModal(true);
       }
+    };
+
+
+    const handleImageUpload  = (e) => {
+      const files = Array.from(e.target.files || []);
+        setDocumentImage((prevImage) => [...prevImage, ...files.slice(0, 10)]);
+        console.log("Selected Images:", files); // Check the selected images
+    
     };
 
   const handleNextImage = () => {
@@ -92,6 +137,14 @@ console.log();
   
   const handleViewDocumentModalClose = () => {
     setShowViewDocumentModal(false);
+  };
+
+  const handleAddDocument = () => {
+    setShowAddDocumentModal(true);
+  };
+
+  const handleAddDocumentClose = () => {
+    setShowAddDocumentModal(false);
   };
 
   const handleLoginModalClose = () => {
@@ -137,25 +190,6 @@ console.log();
     }
   };
 
-  // //creating new room
-  // function createNewRoom () {
-  //   console.log(Ownername);
-  //   // navigate(`/room/${roomId}/${Ownername}`);
-  //   const userId = Cookies.get('userId');
-
-  //   if (userId) {
-  //     navigate(`/room/${roomId}/${Ownername}`);
-  //     socket.emit('new-room-created', { roomId, userId, Ownername ,username });
-
-  //   } else {
-  //       // Save the current path in localStorage
-  //       localStorage.setItem('redirectPath', window.location.pathname);
-
-  //       // Show a message and provide a button to redirect to login page
-  //       setShowLoginModal(true);
-  //     }
-
-  // }
 
   const handleShowFixMeetingConfirmationModal = () => {
     setShowFixMeetingConfirmationModal(true);
@@ -163,6 +197,29 @@ console.log();
 
   const handleCloseFixMeetingConfirmationModal = () => {
     setShowFixMeetingConfirmationModal(false);
+  };
+
+  
+
+  const handleDocumentSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+
+      documentImage.forEach((image, index) => {
+        formData.append('testImage', image);
+      });
+
+      formData.append('propertyId', data._id);
+
+      await addPropertyDocument(formData);
+      // Handle success, e.g., show a success message
+      handleAddDocumentClose();
+    } catch (error) {
+      // Handle error, e.g., show an error message
+      console.error(error);
+    }
   };
 
   
@@ -206,9 +263,22 @@ console.log();
 
             <span className='propertyType'> {data?.city}</span>
           </div>
-          <div className='button-wrapper'>   
+          <div className='button-wrapper'>
+          
+          {
+        ( userId && userId === owner) ?(
+          <></>
+        ):(
           <button onClick={handleOfferProperty} className='button offer-button'>Make an Offer</button>
-          <button onClick={handleShowFixMeetingConfirmationModal} className='button meeting-button'>Fix a Meeting</button>
+
+        )  
+       }
+
+       { (userId && userId !== owner) && 
+        <button onClick={handleShowFixMeetingConfirmationModal} className='button meeting-button'>Fix a Meeting</button>
+
+       }
+
           </div>
           <div className='description'>
             {data?.description} 
@@ -218,7 +288,7 @@ console.log();
               <div className='description'>
                 <Row>
                   <Col md='6'>
-                <div><span className='dataTitle'>No of Rooms:</span> <span className='data'>{data?.district}</span></div>
+                <div><span className='dataTitle'>No of Rooms:</span> <span className='data'>{data?.rooms}</span></div>
                 <div><span className='dataTitle'>No of Floors:</span> <span className='data'>{data?.noOfFloors}</span></div>
                 <div><span className='dataTitle'>Parking Space:</span> <span className='data'>{data?.parkingSpace}</span></div>
                 <div><span className='dataTitle'>Dining Rooms:</span> <span className='data'>{data?.diningRoom}</span></div>
@@ -275,9 +345,26 @@ console.log();
       </Col>
       <Col md ="4">
       <BriefCharacter data={data}/>
-            <div className='view-document'>
+
+      {
+        (userId && userId === owner) ?(
+          <div className='view-document'>
+            <button className='button' onClick={handleAddDocument}>Add document</button>
+            </div>
+        ):(
+          <div className='view-document'>
             <button className='button' onClick={handleViewDocument}> View Document</button>
             </div>
+        )  
+       }
+
+       {
+        ( userId && userId === owner && documentData) &&  
+        <div className='view-document'>
+            <button className='button' onClick={handleViewDocument}> View Document</button>
+            </div>
+       }
+            
             <div className='user-info-container'>
               <p className='user-info'>Seller Information</p>
                   <p>Email: {data?.user?.email}</p>
@@ -286,10 +373,14 @@ console.log();
             </div>
             <div className='user-info-container'>
               <p className='user-info'>Chat with {data?.user?.name} Now </p>
+                {userId && 
                 <p>
                   Click here to start a conversation:
+                  <Link to='/chats' >
                   <MessageOutlined />
+                  </Link>
                 </p>
+                }
             </div>
             
       </Col>
@@ -300,17 +391,44 @@ console.log();
             <div className="modal-content">
             <h2>Property Document</h2>
             <div className='document-wrapper'>
-              <p>Naksa</p>
-              <img src="naksa.jpg" alt="Naksa" className='document-image' />
+              <p style={{paddingRight: '10px', color: 'black'}}>Naksa</p>
+              <img src={naksaImage} alt="Naksa" className='document-image' />
             </div>
             <div className='document-wrapper'>
-              <p>Lalpurja</p>
-              <img src="lalpurja.jpg" alt="Lalpurja" className='document-image' />
+              <p style={{paddingRight: '10px', color: 'black'}}>Lalpurja</p>
+              <img src={lalpurjaImage} alt="Lalpurja" className='document-image' />
             </div>
             <button className='button' onClick={handleViewDocumentModalClose}>Close</button>
             </div>
             </div>
           )}
+
+
+{showAddDocumentModal  && (
+              <div className={`modal-overlay ${showAddDocumentModal ? "active" : ""}`} >
+            <div className="modal-content">
+            <h2>Property Document</h2>
+            <form onSubmit={handleDocumentSubmit}>
+        <div>
+          <label htmlFor="naksa">Naksa and lalpurja</label>
+          <input 
+          onChange={handleImageUpload}
+           type="file"
+            id="naksa" 
+            accept="image/*"
+            multiple
+             />
+        </div>
+        {/* <div>
+          <label htmlFor="lalpurja">Lalpurja</label>
+          <input onChange={handleImageUpload} type="file" id="lalpurja" accept="image/*"  />
+        </div> */}
+        <button type="submit" className='button'>Submit</button>
+        <button type="button" className='button' onClick={handleAddDocumentClose}>Close</button>
+      </form></div>
+            </div>
+          )}
+
 
           {/* Fix Meeting Confirmation Modal */}
       {showFixMeetingConfirmationModal && (

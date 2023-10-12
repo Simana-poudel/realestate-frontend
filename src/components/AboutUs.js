@@ -1,44 +1,40 @@
 import React from 'react';
-// import styles from '../styles/About.module.css';
+import '../css/aboutus.css'; // Import the CSS file
 
 const developers = [
   {
-    name: 'John Doe',
+    name: 'Shikshya Gurung',
     role: 'Frontend Developer',
-    bio: 'John is a passionate frontend developer with expertise in React and CSS. He loves creating beautiful and intuitive user interfaces.',
+    bio: 'Shikshya is a passionate frontend developer with expertise in React and CSS. He loves creating beautiful and intuitive user interfaces.',
   },
   {
-    name: 'Jane Smith',
+    name: 'Anglika Kafle',
     role: 'Backend Developer',
-    bio: 'Jane is a skilled backend developer who specializes in Node.js and database management. She enjoys building robust and scalable applications.',
+    bio: 'Anglika is a skilled backend developer who specializes in Node.js and database management. She enjoys building robust and scalable applications.',
   },
   {
-    name: 'Mike Johnson',
+    name: 'Simana Poudel',
     role: 'Full Stack Developer',
-    bio: 'Mike is a versatile full stack developer proficient in both frontend and backend technologies. He enjoys solving complex problems and building end-to-end solutions.',
+    bio: 'Simana is a versatile full stack developer proficient in both frontend and backend technologies. He enjoys solving complex problems and building end-to-end solutions.',
   },
 ];
 
 const About = () => {
   return (
-    <>
-    <div className="container">
-      <h1 className='h11'>About Us</h1>
+    <div className="container-aboutus">
+      <h1 className='heading'>About Us</h1>
       <div className="developers">
         {developers.map((developer, index) => (
           <div key={index} className="developer">
-            <img className='img1' src={developer.photo} alt={developer.name} />
             <div className="details">
-              <h2 className='h22'>{developer.name}</h2>
-              <h3 className='h33'>{developer.role}</h3>
-              <p className='pp'>{developer.bio}</p>
+              <h2 className='name'>{developer.name}</h2>
+              <h3 className='role'>{developer.role}</h3>
+              <p className='bio'>{developer.bio}</p>
             </div>
           </div>
         ))}
       </div>
     </div>
-    {/* <div className='foot-gap'> </div> */}
-    </>
   );
 };
 

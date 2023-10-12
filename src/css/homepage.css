@@ -131,6 +131,7 @@ select {
 .searchfield{
   outline: 2px solid transparent;
   outline-offset: 2px;
+  color: black;
 }
 
 .search-button{

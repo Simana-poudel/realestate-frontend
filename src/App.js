@@ -25,7 +25,6 @@ function App() {
 
 
   useEffect(() => {
-    // setSocket(io('http://localhost:5000'));
     const _userId = Cookies.get("userId");
     const username = localStorage.getItem("username");
 

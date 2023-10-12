@@ -194,8 +194,8 @@ const PropertyAddPage = () => {
         </FormGroup>
         <FormGroup>
           <Label for="description">Description</Label>
-          <Input
-            type="text"
+          <textarea
+            placeholder='Give the description of your property'
             name="description"
             id="description"
             value={property.description}
@@ -254,7 +254,7 @@ const PropertyAddPage = () => {
         </FormGroup>
 
         <FormGroup>
-          <Label for="size">Size (in Anna)</Label>
+          <Label for="size">Moda (in Anna)</Label>
           <Input
             type="text"
             inputmode="numeric"
@@ -267,7 +267,7 @@ const PropertyAddPage = () => {
         </FormGroup>
 
         <FormGroup>
-          <Label for="area">Area</Label>
+          <Label for="area">Pichhad</Label>
           <Input
             type="text"
             inputmode="numeric"

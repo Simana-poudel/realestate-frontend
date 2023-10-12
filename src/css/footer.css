@@ -2,15 +2,18 @@
     background-color: #f0f0f0;
     padding: 16px;
     text-align: center;
-    display: flex;
+    
     /* flex-direction: column; */
   }
   
   .footer-content {
     /* max-width: 960px; */
     margin: 0 auto;
+    justify-content: center;
+    flex-direction: column;
   }
   
   img.footer-image {
     height: 50px;
+    justify-self: center;
 }

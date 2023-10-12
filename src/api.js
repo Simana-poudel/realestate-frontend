@@ -137,7 +137,7 @@ export const deletePropertyDetail = async (propertyId) => {
 
 export const addPropertyDocument = async (data) => {
   try {
-    const response = await axiosInstance.post(`${baseURL}/api/property`, data);
+    const response = await axiosInstance.post(`${baseURL}/api/propertydocument`, data);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -146,10 +146,13 @@ export const addPropertyDocument = async (data) => {
 };
 
 // GET request example
-export const getPropertyDocument = async (propertydocumentId) => {
+export const getPropertyDocument = async (documentId) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/api/property/${propertydocumentId}`);
-    console.log(response.data);
+    if(!documentId) {
+      throw new Error('Invalid propertyId');
+    }
+    const response = await axiosInstance.get(`${baseURL}/api/propertydocument/${documentId}`);
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error(error);
