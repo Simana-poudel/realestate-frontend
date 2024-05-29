@@ -1,10 +1,8 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
-
+import axios from "axios";
+import Cookies from "js-cookie";
 
 // Define the base URL for the API
-const baseURL = 'http://localhost:5000';
-
+const baseURL = "https://realestate-backend-85sd.onrender.com";
 
 // Create an Axios instance with the base URL
 const axiosInstance = axios.create({
@@ -12,87 +10,100 @@ const axiosInstance = axios.create({
   withCredentials: true, // Include credentials in the request
 });
 
-
 //post request for signup
 export const createAccount = async (data) => {
-    try {
-      const response = await axiosInstance.post(`${baseURL}/api/user/auth/register`, data);
-      alert(response.data.message);
-      return response.data.data;
-    } catch (error) {
-      console.error(error);
-      alert(error?.response?.data?.error);
-    }
-  }
-
-  //post request for verifyuser
-export const createVerifyUser = async (data) => {
   try {
-    const response = await axiosInstance.post(`${baseURL}/api/user/auth/verify-signup`, data);
+    const response = await axiosInstance.post(
+      `${baseURL}/api/user/auth/register`,
+      data
+    );
+    alert(response.data.message);
     return response.data.data;
   } catch (error) {
     console.error(error);
     alert(error?.response?.data?.error);
   }
-}
+};
 
-  //post request for login
+//post request for verifyuser
+export const createVerifyUser = async (data) => {
+  try {
+    const response = await axiosInstance.post(
+      `${baseURL}/api/user/auth/verify-signup`,
+      data
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error(error);
+    alert(error?.response?.data?.error);
+  }
+};
+
+//post request for login
 export const createlogin = async (data) => {
-    try {
-      const response = await axiosInstance.post(`${baseURL}/api/user/auth/login`, data);
-      return response.data.data;
-    } catch (error) {
-      console.error(error);
-      alert(error?.response?.data?.error);
-    }
-  };
+  try {
+    const response = await axiosInstance.post(
+      `${baseURL}/api/user/auth/login`,
+      data
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error(error);
+    alert(error?.response?.data?.error);
+  }
+};
 
-  export const createLogout = async () => {
-    try {
-      const token = Cookies.get('access_token'); // Retrieve the token from the cookie
-      console.log(token)
-      const response = await axiosInstance.post(
-        `${baseURL}/api/user/auth/logout`, null, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true, // Include credentials in the request
-        });
-      return response.data.data;
-    } catch (error) {
-      console.error(error);
-      alert(error?.response?.data?.error);
-    }
-  };
+export const createLogout = async () => {
+  try {
+    const token = Cookies.get("access_token"); // Retrieve the token from the cookie
+    console.log(token);
+    const response = await axiosInstance.post(
+      `${baseURL}/api/user/auth/logout`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true, // Include credentials in the request
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error(error);
+    alert(error?.response?.data?.error);
+  }
+};
 
-  // GET request example
-  export const getUsers = async (query) => {
-    try {
-      const response = await axiosInstance.get(`${baseURL}/api/user`,  { params: query });
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
+// GET request example
+export const getUsers = async (query) => {
+  try {
+    const response = await axiosInstance.get(`${baseURL}/api/user`, {
+      params: query,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
-  export const createProperty = async (data) => {
-    try {
-      const response = await axiosInstance.post(`${baseURL}/api/property`, data);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-  
-
+export const createProperty = async (data) => {
+  try {
+    const response = await axiosInstance.post(`${baseURL}/api/property`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
 // GET request example
 export const getProperties = async (query) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/api/property`, { params: query });
+    const response = await axiosInstance.get(`${baseURL}/api/property`, {
+      params: query,
+    });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -104,7 +115,9 @@ export const getProperties = async (query) => {
 // GET request example
 export const getPropertyDetail = async (propertyId) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/api/property/${propertyId}`);
+    const response = await axiosInstance.get(
+      `${baseURL}/api/property/${propertyId}`
+    );
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -115,7 +128,9 @@ export const getPropertyDetail = async (propertyId) => {
 
 export const updatePropertyDetail = async (propertyId) => {
   try {
-    const response = await axiosInstance.put(`${baseURL}/api/property/${propertyId}`);
+    const response = await axiosInstance.put(
+      `${baseURL}/api/property/${propertyId}`
+    );
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -126,7 +141,9 @@ export const updatePropertyDetail = async (propertyId) => {
 
 export const deletePropertyDetail = async (propertyId) => {
   try {
-    const response = await axiosInstance.delete(`${baseURL}/api/property/${propertyId}`);
+    const response = await axiosInstance.delete(
+      `${baseURL}/api/property/${propertyId}`
+    );
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -137,7 +154,10 @@ export const deletePropertyDetail = async (propertyId) => {
 
 export const addPropertyDocument = async (data) => {
   try {
-    const response = await axiosInstance.post(`${baseURL}/api/propertydocument`, data);
+    const response = await axiosInstance.post(
+      `${baseURL}/api/propertydocument`,
+      data
+    );
     return response.data;
   } catch (error) {
     console.error(error);
@@ -148,10 +168,12 @@ export const addPropertyDocument = async (data) => {
 // GET request example
 export const getPropertyDocument = async (documentId) => {
   try {
-    if(!documentId) {
-      throw new Error('Invalid propertyId');
+    if (!documentId) {
+      throw new Error("Invalid propertyId");
     }
-    const response = await axiosInstance.get(`${baseURL}/api/propertydocument/${documentId}`);
+    const response = await axiosInstance.get(
+      `${baseURL}/api/propertydocument/${documentId}`
+    );
     console.log(response);
     return response.data;
   } catch (error) {
@@ -163,7 +185,9 @@ export const getPropertyDocument = async (documentId) => {
 // GET request example
 export const getOfferedProperty = async (offerpropertyId) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/api/offerproperty/${offerpropertyId}`);
+    const response = await axiosInstance.get(
+      `${baseURL}/api/offerproperty/${offerpropertyId}`
+    );
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -174,7 +198,10 @@ export const getOfferedProperty = async (offerpropertyId) => {
 
 export const addOfferProperty = async (data) => {
   try {
-    const response = await axiosInstance.post(`${baseURL}/api/offerproperty`, data);
+    const response = await axiosInstance.post(
+      `${baseURL}/api/offerproperty`,
+      data
+    );
     return response.data;
   } catch (error) {
     console.error(error);
@@ -184,7 +211,10 @@ export const addOfferProperty = async (data) => {
 
 export const fixMeetingWithSeller = async (data) => {
   try {
-    const response = await axiosInstance.post(`${baseURL}/api/offerproperty/fixmeeting`, data);
+    const response = await axiosInstance.post(
+      `${baseURL}/api/offerproperty/fixmeeting`,
+      data
+    );
     return response.data;
   } catch (error) {
     console.error(error);
@@ -203,7 +233,6 @@ export const fetchChats = async () => {
     throw error;
   }
 };
-
 
 export const createChat = async (data) => {
   try {
@@ -227,7 +256,9 @@ export const findUserChats = async (userId) => {
 
 export const getMessage = async (chatId) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/api/message/${chatId}`);
+    const response = await axiosInstance.get(
+      `${baseURL}/api/message/${chatId}`
+    );
     console.log(response);
     return response.data;
   } catch (error) {
@@ -235,7 +266,6 @@ export const getMessage = async (chatId) => {
     throw error;
   }
 };
-
 
 export const sendMessageToServer = async (data) => {
   try {
@@ -247,12 +277,13 @@ export const sendMessageToServer = async (data) => {
   }
 };
 
-
-
 // PUT request example
 export const updateTodo = async (id, data) => {
   try {
-    const response = await axiosInstance.patch(`${baseURL}/api/todo/${id}`, data);
+    const response = await axiosInstance.patch(
+      `${baseURL}/api/todo/${id}`,
+      data
+    );
     return response.data;
   } catch (error) {
     console.error(error);
@@ -263,7 +294,9 @@ export const updateTodo = async (id, data) => {
 // GET request example
 export const findChat = async (firstId, secondId) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/api/chats/${firstId}/${secondId}`);
+    const response = await axiosInstance.get(
+      `${baseURL}/api/chats/${firstId}/${secondId}`
+    );
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -271,6 +304,5 @@ export const findChat = async (firstId, secondId) => {
     throw error;
   }
 };
-
 
 export default axiosInstance;
